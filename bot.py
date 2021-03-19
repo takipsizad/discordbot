@@ -17,9 +17,10 @@ import jishaku
 import discord_slash
 import dbl
 import motor
-from discord_slash.utils.manage_commands import create_option
 import uuid
 from discord_slash import SlashCommand
+from threading import Thread
+from flask import Flask
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -448,8 +449,6 @@ async def _invite(ctx):
     embed.add_field(name='Invite this bot for the bot',value='[invite](http://bit.ly/takipsizadbot1)')
     await ctx.send(embed=embed)
 
-from threading import Thread
-from flask import Flask
 
 app=Flask("")
 
