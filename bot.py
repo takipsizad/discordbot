@@ -18,6 +18,7 @@ import dbl
 import motor
 import uuid
 from discord_slash import SlashCommand
+import discord_slash
 from threading import Thread
 from flask import Flask
 cg = CoinGeckoAPI()
@@ -25,7 +26,7 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 ıntents = discord.Intents.all()
 bot = commands.Bot(command_prefix="ta!!",intents=ıntents)
-slash = SlashCommand(bot)
+slash = SlashCommand(bot,sync_commands=True)
 token = os.getenv('token')
 dbltoken = os.getenv('dbltoken')
 db = os.getenv('db')
@@ -427,7 +428,7 @@ async def _redd_t(ctx,subreddit):
 
 
 @slash.slash(name="donate",description="Donate command")
-async def _donate(ctx):
+async def __donate(ctx):
     embed=discord.Embed(title="Donate",color=0x209f69)
     embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
     embed.set_footer(text="thanks for using my bot ❤️  ")
@@ -435,14 +436,14 @@ async def _donate(ctx):
 
 
 @slash.slash(name="cryptoprices",description="cryptoprice command")
-async def _cryptoprices(ctx,cryptocurrency,currency):
+async def __cryptoprices(ctx,cryptocurrency,currency):
     prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
     p2 = prices[cryptocurrency]
     e = p2[currency]
     await ctx.send('{} price: {} in {}'.format(cryptocurrency,e,currency))
 
 @slash.slash(name="invite",description="Invite command")
-async def _invite(ctx):
+async def __invite(ctx):
     embed = discord.Embed()
     embed.title = "Invite link"
     embed.add_field(name='Invite this bot for the bot',value='[invite](http://bit.ly/takipsizadbot1)')
