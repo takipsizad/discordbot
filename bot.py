@@ -14,7 +14,6 @@ import reddit
 import aiohttp
 from pycoingecko import CoinGeckoAPI
 import jishaku
-import discord_slash
 import dbl
 import motor
 import uuid
