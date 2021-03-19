@@ -3,16 +3,13 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 import json
-from discord.ext import tasks, commands
+from discord.ext import commands
 import platform
 from discord.ext.commands import has_permissions
 import asyncio
 import random
 from bs4 import BeautifulSoup
-import random
 from pytube import YouTube
-import itertools
-from itertools import cycle
 import reddit
 import aiohttp
 from pycoingecko import CoinGeckoAPI
