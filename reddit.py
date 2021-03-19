@@ -4,7 +4,7 @@ import json
 import discord
 import random
 
-async def reddit(subreddit):
+async def reddit(reddit):
     async with aiohttp.ClientSession() as session:
         async with session.get('https://www.reddit.com/r/{}/new/.json?count=25'.format(subreddit),headers ={'User-agent': 'Mozilla/5.0'}) as ct:
             jsonr = json.dumps(await ct.json())

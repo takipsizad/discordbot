@@ -3,7 +3,6 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 import json
-import sys
 from discord.ext import tasks, commands
 import platform
 from discord.ext.commands import has_permissions
@@ -11,27 +10,25 @@ import asyncio
 import random
 from bs4 import BeautifulSoup
 import random
-import pytube
 from pytube import YouTube
 import itertools
 from itertools import cycle
 import reddit
 import aiohttp
-from dpymenus import Page, PaginatedMenu
 from pycoingecko import CoinGeckoAPI
 import jishaku
-from discord_slash import *
 import discord_slash
 import dbl
 import motor
+from discord_slash.utils.manage_commands import create_option
 import uuid
-
-
+from discord_slash import SlashCommand
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 ıntents = discord.Intents.all()
 bot = commands.Bot(command_prefix="ta!!",intents=ıntents)
+slash = SlashCommand(bot)
 token = os.getenv('token')
 dbltoken = os.getenv('dbltoken')
 db = os.getenv('db')
@@ -51,7 +48,7 @@ async def ch_pr():
         statuss = ["prefix : ta!!","made with python3 lol","0xf667485f542185d2c27B897E660a589a37b21FCc my ethereum adress dont forget to donate :D ",
         "made by takipsizad", f"on {len(bot.guilds)} servers","ta!!help for help" 
         , f"on {round(bot.latency * 1000)} ping" , f"discord py version: {(discord.__version__)}"
-        ,"ta!!vote :D ",""]
+        ,"ta!!vote :D "]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(status=discord.Status.do_not_disturb, activity=statusss)
         await asyncio.sleep(20)
@@ -164,7 +161,7 @@ async def vote(ctx):
 async def invite(ctx):
     embed = discord.Embed()
     embed.title = "Invite link"
-    embed.add_field(name='Invite this bot for the bot',value='[invite](http://bit.ly/takipsizadbot)')
+    embed.add_field(name='Invite this bot for the bot',value='[invite](http://bit.ly/takipsizadbot1)')
     await ctx.reply(embed=embed)
 
 @bot.command()
@@ -226,12 +223,14 @@ async def memes(ctx):
     memesubreddit = ['dankmemes','memes','HistoryMemes','PrequelMemes','wholesomememes','ProgrammerHumor','codingmemes','SkidsBeingSkids','IT_Memes','programmerjoke','masterhacker']
     await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
 
-@bot.command()
-async def all(ctx):
+@bot.command(name="all")
+async def lal(ctx):
     await ctx.reply(embed=await reddit.reddit('random'))
 @bot.command()
 async def programmerhumor(ctx):
     await ctx.reply(embed=await reddit.reddit('programmerhumor'))
+
+@bot.command()
 async def donate(ctx):
     embed=discord.Embed(title="Donate",color=0x209f69)
     embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
@@ -308,7 +307,22 @@ async def prices(ctx):
     await ctx.reply('ethereum price: {} in usd'.format(e))
 
 @bot.listen("on_command_error")
-async def warn_on_command_cooldown(ctx, error):
+async def on_command_error(ctx, error):
+    # Unwrapping the error cause because of how discord.py raises some of them
+    error = error.__cause__ or error
+    print(error)
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.reply(f"That command is on cooldown for `{error.retry_after:,.0f}` more seconds!")
+    if isinstance(error,  commands.errors.MissingRequiredArgument):
+        await ctx.reply('make sure to enter a required argument')
+
+    if isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.reply('some error happened give me enough permissions for that ')
+    if isinstance(error, commands.NotOwner):
+        await ctx.reply("you are not my owner ")
+
+@bot.listen("on_slash_command_error")
+async def on_slash_command_error(ctx, error):
     # Unwrapping the error cause because of how discord.py raises some of them
     error = error.__cause__ or error
     print(error)
@@ -324,12 +338,14 @@ async def warn_on_command_cooldown(ctx, error):
 
 
 
+
 @bot.command()
 async def cryptoprices(ctx,arg1,arg2):
     prices = cg.get_price(ids=arg1, vs_currencies=arg2)
     p2 = prices[arg1]
     e = p2[arg2]
     await ctx.reply('{} price: {} in {}'.format(arg1,e,arg2))
+
 
 @bot.event
 async def on_message(message):
@@ -348,6 +364,22 @@ async def on_command(ctx):
     embed.add_field(name="Guild", value=f"``{ctx.guild}``")
     embed.add_field(name="Guild ID", value=f"``{ctx.guild.id}``")
     await channel.send(embed=embed)
+
+@bot.listen("on_slash_command")
+async def on_command(ctx):
+    channel = bot.get_channel(805355006551130122)
+    embed = discord.Embed()
+    embed.set_author(name="Command invoked")
+    embed.add_field(name="Command", value=f"``{ctx.command}``")
+    embed.add_field(name="Author", value=f"``{ctx.author}``")
+    embed.add_field(name="Author ID", value=f"``{ctx.author.id}``")
+    embed.add_field(name="Channel", value=f"``{ctx.channel}``")
+    embed.add_field(name="Channel ID", value=f"``{ctx.channel.id}``")
+    embed.add_field(name="Guild", value=f"``{ctx.guild}``")
+    embed.add_field(name="Guild ID", value=f"``{ctx.guild.id}``")
+    await channel.send(embed=embed)
+
+
 @bot.command()
 async def catfact(ctx):
     async with aiohttp.ClientSession() as session:
@@ -362,7 +394,6 @@ async def generatecode(ctx):
     if 542380989775740929 == ctx.author.id:
             prmcodess = str(uuid.uuid4())
             prmdata = {prmcodess:"pff"}
-
             await prmc.insert_one(prmdata)
             await ctx.author.send(f"{prmcodess} generated code")
     else:
@@ -377,6 +408,49 @@ async def usecode(ctx,arg1):
             await premium.insert_one({str(ctx.author.id):"true"})
         else:
             await ctx.reply("Invalid code")
+
+
+@slash.slash(name="info",description="Info command")
+async def _info(ctx):
+    await ctx.respond()
+    await ctx.send('discord py version {} \nos version {}\npython info {} {}\non {} guilds\nmade by takipsizad'.format(discord.__version__,platform.platform(aliased=0, terse=0),platform.python_implementation(),
+    platform.python_version(),len(bot.guilds)))
+
+
+@slash.slash(name="reddit",description="Reddit command")
+async def _redd_t(ctx,subreddit):
+    e = await dble.get_user_vote(user_id=ctx.author.id)
+    prm = await premium.find_one({str(ctx.author.id):"true"})
+    if e == True:
+        await ctx.send(embed=await reddit.reddit(subreddit))
+    elif prm == None:
+        await ctx.send("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
+    else:
+        await ctx.send(embed=await reddit.reddit(subreddit))
+
+
+@slash.slash(name="donate",description="Donate command")
+async def _donate(ctx):
+    embed=discord.Embed(title="Donate",color=0x209f69)
+    embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
+    embed.set_footer(text="thanks for using my bot ❤️  ")
+    await ctx.send(embed=embed) 
+
+
+@slash.slash(name="cryptoprices",description="cryptoprice command")
+async def _cryptoprices(ctx,cryptocurrency,currency):
+    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
+    p2 = prices[cryptocurrency]
+    e = p2[currency]
+    await ctx.send('{} price: {} in {}'.format(cryptocurrency,e,currency))
+
+@slash.slash(name="invite",description="Invite command")
+async def _invite(ctx):
+    embed = discord.Embed()
+    embed.title = "Invite link"
+    embed.add_field(name='Invite this bot for the bot',value='[invite](http://bit.ly/takipsizadbot1)')
+    await ctx.send(embed=embed)
+
 from threading import Thread
 from flask import Flask
 
