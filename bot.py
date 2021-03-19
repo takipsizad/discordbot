@@ -366,7 +366,7 @@ async def on_command(ctx):
     await channel.send(embed=embed)
 
 @bot.listen("on_slash_command")
-async def on_command(ctx):
+async def on_commsand(ctx):
     channel = bot.get_channel(805355006551130122)
     embed = discord.Embed()
     embed.set_author(name="Command invoked")
