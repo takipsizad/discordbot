@@ -1,4 +1,4 @@
 *.env
-.env
+.env #ignores .env files
 __pycache__
 .vscode
