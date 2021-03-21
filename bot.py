@@ -1,4 +1,5 @@
 import discord
+import pymongo
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -21,7 +22,6 @@ from discord_slash import SlashCommand
 import discord_slash
 from threading import Thread
 from flask import Flask
-import sys
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -52,7 +52,9 @@ async def ch_pr():
         ,"7/24 online lol","aiohttp included","[insert list]","ta!!help help command","no requests included","database included","mongo db included"
         "LOL","running python","python included","bored","slash commands are out ","""Somebody once told me the world is gonna roll me I ain't the sharpest tool in the shed"""
         "i run out of ideas",":D","h","not made with node.js","made by takipsizad#1919","the developer of this bot is available for hire | dm on discord takipsizad#1919"
-        ,"made with CPython","random things go","i hate c++ WHAT İS cout <<<string","bruh"]
+        ,f"made with {platform.python_implementation()}","random things go","i hate c++ WHAT İS cout <<<string","bruh","c is better then c++ change my mind","idk lol"
+        "sike","eeee","batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout ","(¬_¬)"," this bot wont get verified","Usb stick"
+        ,"discord moment","powered by discord.py"]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(status=discord.Status.do_not_disturb, activity=statusss)
         await asyncio.sleep(30)
@@ -112,7 +114,7 @@ async def info(ctx):
 discord py version {discord.__version__}
 aiohttp version  {aiohttp.__version__}
 discord slash version  {discord_slash.__version__}
-motor (mongodb) version  {motor.version}
+motor (mongodb) version  {pymongo.version}
 os version {platform.platform(aliased=0, terse=0)}
 python info {platform.python_implementation()} {platform.python_version()}
 on {len(bot.guilds)} guilds 
