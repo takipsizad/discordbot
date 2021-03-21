@@ -21,6 +21,7 @@ from discord_slash import SlashCommand
 import discord_slash
 from threading import Thread
 from flask import Flask
+import sys
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -47,10 +48,14 @@ async def ch_pr():
         "made by takipsizad", f"on {len(bot.guilds)} servers","ta!!help for help" 
         , f"on {round(bot.latency * 1000)} ping" , f"discord py version: {(discord.__version__)}"
         ,"ta!!vote :D ","bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv my bitcoin adress dont forget to donate :D ","dont forget to donate :D ","hey idk what to write","slash commands are out "
-        ,"never gonna give you up let you down run around and desert you","hey there thanks to you for using my bots"]
+        ,"never gonna give you up let you down run around and desert you","hey there thanks to you for using my bots","h",":D ","ಠ_ಠ"
+        ,"7/24 online lol","aiohttp included","[insert list]","ta!!help help command","no requests included","database included","mongo db included"
+        "LOL","running python","python included","bored","slash commands are out ","""Somebody once told me the world is gonna roll me I ain't the sharpest tool in the shed"""
+        "i run out of ideas",":D","h","not made with node.js","made by takipsizad#1919","the developer of this bot is available for hire | dm on discord takipsizad#1919"
+        ,"made with CPython","random things go","i hate c++ WHAT İS cout <<<string","bruh"]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(status=discord.Status.do_not_disturb, activity=statusss)
-        await asyncio.sleep(20)
+        await asyncio.sleep(30)
 
 
 bot.loop.create_task(ch_pr())
@@ -111,7 +116,7 @@ motor (mongodb) version  {motor.version}
 os version {platform.platform(aliased=0, terse=0)}
 python info {platform.python_implementation()} {platform.python_version()}
 on {len(bot.guilds)} guilds 
-made by takipsizad""")
+made by takipsizad#1919""")
 
 @bot.event
 async def on_guild_join(guild):
@@ -425,7 +430,7 @@ motor (mongodb) version  {motor.version}
 os version {platform.platform(aliased=0, terse=0)}
 python info {platform.python_implementation()} {platform.python_version()}
 on {len(bot.guilds)} guilds 
-made by takipsizad""")
+made by takipsizad#1919""")
 
 @slash.slash(name="reddit",description="Reddit command")
 async def _redd_t(ctx,subreddit):
@@ -446,7 +451,7 @@ async def __donate(ctx):
     embed.add_field(name='donate bitcoin',value='bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv')
     embed.add_field(name='donate bitcoin (backup)',value='bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2')
     embed.set_footer(text="thanks for using my bot ❤️  ")
-    await ctx.reply(embed=embed) 
+    await ctx.send(embed=embed) 
 
 @slash.slash(name="cryptoprices",description="cryptoprice command")
 async def __cryptoprices(ctx,cryptocurrency,currency):

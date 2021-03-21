@@ -74,7 +74,7 @@ class help(commands.Cog):
         if not None == x:
             await menu.open()
         else:
-            embed.discord()
+            discord.Embed()
             embed.title = "Verify"
             embed.add_field(name="by using my bot you agree rules",value="[rules](https://gist.github.com/takipsizad/4a2755e12c31a9495c417370b956f363)")
             embed.add_field(name="Dont forget to donate for my bot",value="my ethereum adress 0xf667485f542185d2c27B897E660a589a37b21FCc")
