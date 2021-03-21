@@ -41,12 +41,13 @@ bot.load_extension('jishaku')
 
 dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost = True)
 async def ch_pr():
+    await bot.wait_until_ready()
     while True:
-        await bot.wait_until_ready()
         statuss = ["prefix : ta!!","made with python3 lol","0xf667485f542185d2c27B897E660a589a37b21FCc my ethereum adress dont forget to donate :D ",
         "made by takipsizad", f"on {len(bot.guilds)} servers","ta!!help for help" 
         , f"on {round(bot.latency * 1000)} ping" , f"discord py version: {(discord.__version__)}"
-        ,"ta!!vote :D "]
+        ,"ta!!vote :D ","bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv my bitcoin adress dont forget to donate :D ","dont forget to donate :D ","hey idk what to write","slash commands are out "
+        ,"never gonna give you up let you down run around and desert you","hey there thanks to you for using my bots"]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(status=discord.Status.do_not_disturb, activity=statusss)
         await asyncio.sleep(20)
@@ -102,8 +103,7 @@ async def execute(ctx, *,args):
         output = eval(args)
         await ctx.reply(output)
     else:
-        await ctx.reply('nah you arent my owner')
-
+        raise commands.NotOwner("") 
 @bot.command()
 async def info(ctx):
     await ctx.reply('discord py version {} \nos version {}\npython info {} {}\non {} guilds \nmade by takipsizad'.format(discord.__version__,platform.platform(aliased=0, terse=0),platform.python_implementation(),
@@ -232,6 +232,9 @@ async def programmerhumor(ctx):
 async def donate(ctx):
     embed=discord.Embed(title="Donate",color=0x209f69)
     embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
+    embed.add_field(name='donate bitcoin',value='bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv')
+    embed.add_field(name='donate bitcoin (backup)',value='bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2')
+
     embed.set_footer(text="thanks for using my bot ❤️  ")
     await ctx.reply(embed=embed) 
 
@@ -395,7 +398,7 @@ async def generatecode(ctx):
             await prmc.insert_one(prmdata)
             await ctx.author.send(f"{prmcodess} generated code")
     else:
-        await ctx.reply('nah you arent my owner')
+        raise commands.NotOwner("") 
 
 @bot.command()
 async def usecode(ctx,arg1):
