@@ -62,22 +62,19 @@ async def ping(ctx):
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ipcheck(ctx,arg1):
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.iplegit.com/info?ip=' + str(arg1),headers ={'User-agent': 'Mozilla/5.0'}) as res:
-                jsonr = json.dumps(await res.json())
-                parsed_json = json.loads(jsonr)
-                parsed_json2 = parsed_json['bad']
-                parsed_json3 = parsed_json['type']
-                parsed_json4 = parsed_json['ip']
-                await ctx.reply('bad: {} type: {} ip: {}'.format(str(parsed_json2), str(parsed_json3), str(parsed_json4)))
-    except:
-        await ctx.reply('error make sure you write ip to check')
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://api.iplegit.com/info?ip=' + str(arg1),headers ={'User-agent': 'Mozilla/5.0'}) as res:
+            jsonr = json.dumps(await res.json())
+            parsed_json = json.loads(jsonr)
+            parsed_json2 = parsed_json['bad']
+            parsed_json3 = parsed_json['type']
+            parsed_json4 = parsed_json['ip']
+            await ctx.reply('bad: {} type: {} ip: {}'.format(str(parsed_json2), str(parsed_json3), str(parsed_json4)))
 
 
 @bot.event
 async def on_ready():
-    print("Your bot is ready")
+    print("Bot is ready")
 
 @bot.command()
 async def langdetect(ctx,arg1):
@@ -106,8 +103,15 @@ async def execute(ctx, *,args):
         raise commands.NotOwner("") 
 @bot.command()
 async def info(ctx):
-    await ctx.reply('discord py version {} \nos version {}\npython info {} {}\non {} guilds \nmade by takipsizad'.format(discord.__version__,platform.platform(aliased=0, terse=0),platform.python_implementation(),
-    platform.python_version(),len(bot.guilds)))
+    await ctx.reply(f"""
+discord py version {discord.__version__}
+aiohttp version  {aiohttp.__version__}
+discord slash version  {discord_slash.__version__}
+motor (mongodb) version  {motor.version}
+os version {platform.platform(aliased=0, terse=0)}
+python info {platform.python_implementation()} {platform.python_version()}
+on {len(bot.guilds)} guilds 
+made by takipsizad""")
 
 @bot.event
 async def on_guild_join(guild):
@@ -234,7 +238,6 @@ async def donate(ctx):
     embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
     embed.add_field(name='donate bitcoin',value='bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv')
     embed.add_field(name='donate bitcoin (backup)',value='bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2')
-
     embed.set_footer(text="thanks for using my bot ❤️  ")
     await ctx.reply(embed=embed) 
 
@@ -414,9 +417,15 @@ async def usecode(ctx,arg1):
 @slash.slash(name="info",description="Info command")
 async def _info(ctx):
     await ctx.respond()
-    await ctx.send('discord py version {} \nos version {}\npython info {} {}\non {} guilds\nmade by takipsizad'.format(discord.__version__,platform.platform(aliased=0, terse=0),platform.python_implementation(),
-    platform.python_version(),len(bot.guilds)))
-
+    await ctx.send(f"""
+discord py version {discord.__version__}
+aiohttp version  {aiohttp.__version__}
+discord slash version  {discord_slash.__version__}
+motor (mongodb) version  {motor.version}
+os version {platform.platform(aliased=0, terse=0)}
+python info {platform.python_implementation()} {platform.python_version()}
+on {len(bot.guilds)} guilds 
+made by takipsizad""")
 
 @slash.slash(name="reddit",description="Reddit command")
 async def _redd_t(ctx,subreddit):
@@ -434,9 +443,10 @@ async def _redd_t(ctx,subreddit):
 async def __donate(ctx):
     embed=discord.Embed(title="Donate",color=0x209f69)
     embed.add_field(name='donate ethereum',value='0xf667485f542185d2c27B897E660a589a37b21FCc')
+    embed.add_field(name='donate bitcoin',value='bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv')
+    embed.add_field(name='donate bitcoin (backup)',value='bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2')
     embed.set_footer(text="thanks for using my bot ❤️  ")
-    await ctx.send(embed=embed) 
-
+    await ctx.reply(embed=embed) 
 
 @slash.slash(name="cryptoprices",description="cryptoprice command")
 async def __cryptoprices(ctx,cryptocurrency,currency):
