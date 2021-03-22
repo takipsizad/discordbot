@@ -33,6 +33,7 @@ class help(commands.Cog):
         ta!!create-invite
         ta!!delete-invite <invite>
         ta!!getwidget
+        ta!!catfact
         """)
 
         page3 = Page(title='commands:', description='Third page')

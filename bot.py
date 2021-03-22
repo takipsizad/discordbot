@@ -26,8 +26,8 @@ cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 ıntents = discord.Intents.all()
-bot = commands.Bot(command_prefix="ta!!",intents=ıntents)
-slash = SlashCommand(bot,sync_commands=True)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('ta!!'),intents=ıntents)
+slash = SlashCommand(bot,sync_commands=True)ta
 token = os.getenv('token')
 dbltoken = os.getenv('dbltoken')
 db = os.getenv('db')
@@ -114,7 +114,7 @@ async def info(ctx):
 discord py version {discord.__version__}
 aiohttp version  {aiohttp.__version__}
 discord slash version  {discord_slash.__version__}
-motor (mongodb) version  {pymongo.version}
+motor (mongodb) version  {motor.version}
 os version {platform.platform(aliased=0, terse=0)}
 python info {platform.python_implementation()} {platform.python_version()}
 on {len(bot.guilds)} guilds 
