@@ -1,5 +1,4 @@
 import discord
-import pymongo
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -27,7 +26,7 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 ıntents = discord.Intents.all()
 bot = commands.Bot(command_prefix=commands.when_mentioned_or('ta!!'),intents=ıntents)
-slash = SlashCommand(bot,sync_commands=True)ta
+slash = SlashCommand(bot,sync_commands=True)
 token = os.getenv('token')
 dbltoken = os.getenv('dbltoken')
 db = os.getenv('db')
