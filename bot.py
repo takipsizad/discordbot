@@ -21,6 +21,7 @@ from discord_slash import SlashCommand
 import discord_slash
 from threading import Thread
 from flask import Flask
+import string
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -38,6 +39,10 @@ bot.remove_command("help")
 bot.load_extension("help")
 bot.load_extension('jishaku')
 
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost = True)
 async def ch_pr():
@@ -51,9 +56,9 @@ async def ch_pr():
         ,"7/24 online lol","aiohttp included","[insert list]","ta!!help help command","no requests included","database included","mongo db included"
         "LOL","running python","python included","bored","slash commands are out ","""Somebody once told me the world is gonna roll me I ain't the sharpest tool in the shed"""
         "i run out of ideas",":D","h","not made with node.js","made by takipsizad#1919","the developer of this bot is available for hire | dm on discord takipsizad#1919"
-        ,f"made with {platform.python_implementation()}","random things go","i hate c++ WHAT İS cout <<<string","bruh","c is better then c++ change my mind","idk lol"
-        "sike","eeee","batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout ","(¬_¬)"," this bot wont get verified","Usb stick"
-        ,"discord moment","powered by discord.py"]
+        ,f"made with {platform.python_implementation()}","random things go","i hate c++ WHAT İS cout <<string","bruh","c is better then c++ change my mind","idk lol"
+        "sike","eeee","batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout <<","(¬_¬)"," this bot wont get verified","Usb stick"
+        ,"discord moment","powered by discord.py","discord.py included ","just invite the bot to setup","dont watch my status",f"{get_random_string(15)}{get_random_string(15)}{get_random_string(15)}","bored"]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(status=discord.Status.do_not_disturb, activity=statusss)
         await asyncio.sleep(30)
@@ -379,7 +384,7 @@ async def on_command(ctx):
 async def on_commsand(ctx):
     channel = bot.get_channel(805355006551130122)
     embed = discord.Embed()
-    embed.set_author(name="Command invoked")
+    embed.set_author(name="Slash Command invoked")
     embed.add_field(name="Command", value=f"``{ctx.command}``")
     embed.add_field(name="Author", value=f"``{ctx.author}``")
     embed.add_field(name="Author ID", value=f"``{ctx.author.id}``")
@@ -443,6 +448,8 @@ async def _redd_t(ctx,subreddit):
         await ctx.send("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
     else:
         await ctx.send(embed=await reddit.reddit(subreddit))
+
+
 
 
 @slash.slash(name="donate",description="Donate command")
