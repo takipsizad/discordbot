@@ -3,7 +3,7 @@ import json
 import discord
 import random
 
-async def reddit(reddit):
+async def reddit(subreddit):
     async with aiohttp.ClientSession() as session:
         async with session.get('https://www.reddit.com/r/{}/new/.json?count=25'.format(subreddit),headers ={'User-agent': 'Mozilla/5.0'}) as ct:
             jsonr = json.dumps(await ct.json())
@@ -17,7 +17,7 @@ async def reddit(reddit):
                 parsed_json4 = parsed_json3[random.randint(0,15)]
             parsed_json5 = parsed_json4['data']
             if True == parsed_json5['over_18']:
-	            return embed.add_field(name='cant send +18 things ',value='try again :)')
+	            return embed.add_field(name='cant send +18 things ',value=':)')
             else:
                 if None == parsed_json5['removed_by_category']:
                     embed.title = parsed_json5['title']
@@ -51,7 +51,7 @@ async def randomreddit(subreddits):
                 parsed_json4 = parsed_json3[random.randint(0,15)]
             parsed_json5 = parsed_json4['data']
             if True == parsed_json5['over_18']:
-                return embed.add_field(name='cant send +18 things ',value='try again :)')
+                return embed.add_field(name='cant send +18 things ',value=':')
             else:
                 if None == parsed_json5['removed_by_category']:
                     embed.title = parsed_json5['title']
