@@ -336,7 +336,7 @@ async def eth(ctx):
 async def gasprice(ctx):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            ("https://ethapi.takipsizad.repl.co/api/gasprices")
+            ("https://ethapi.takipsizad.repl.co/api/v1/gasprices")
         ) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
@@ -348,7 +348,7 @@ async def gasprice(ctx):
 async def web3version(ctx):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            ("https://ethapi.takipsizad.repl.co/api/version")) as res:
+            ("https://ethapi.takipsizad.repl.co/api/v1/version")) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["web3version"]
@@ -359,7 +359,7 @@ async def web3version(ctx):
 async def balance(ctx, arg1):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            (f"https://ethapi.takipsizad.repl.co/api/checkbal?wallet={arg1}")) as res:
+            (f"https://ethapi.takipsizad.repl.co/api/v1/checkbal?wallet={arg1}")) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["balance"]
@@ -370,7 +370,7 @@ async def balance(ctx, arg1):
 async def ibantoadress(ctx, arg1):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            (f"https://ethapi.takipsizad.repl.co/api/ibantoadress?Iban={arg1}")) as res:
+            (f"https://ethapi.takipsizad.repl.co/api/v1/ibantoadress?Iban={arg1}")) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["adress"]
@@ -380,7 +380,7 @@ async def ibantoadress(ctx, arg1):
 @eth.command()
 async def adresstoiban(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethapi.takipsizad.repl.co/api/adresstoiban?adress={arg1}")) as res:
+        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/adresstoiban?adress={arg1}")) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["iban"]
@@ -391,7 +391,7 @@ async def adresstoiban(ctx, arg1):
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://ethapi.takipsizad.repl.co/api/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get("https://ethapi.takipsizad.repl.co/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["acc"]
@@ -454,7 +454,9 @@ async def cryptoprices(ctx, arg1, arg2):
     prices = cg.get_price(ids=arg1, vs_currencies=arg2)
     p2 = prices[arg1]
     e = p2[arg2]
-    await ctx.reply("{} price: {} in {}".format(arg1, e, arg2))
+    embed = discord.Embed()
+    embed.add_field(name=,value=f"{arg1} price: {e} in {arg2}")
+    await ctx.reply(f"{arg1} price: {e} in {arg2}")
 
 
 @bot.event
