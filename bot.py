@@ -23,8 +23,8 @@ import dbl
 import motor
 from discord_slash import SlashCommand
 import discord_slash
-import bottle
-
+from threading import Thread
+from flask import Flask
 # importing local modules
 import reddit
 
@@ -70,11 +70,13 @@ async def ch_pr():
         )
         await asyncio.sleep(30)
 
-async def set_vars():
-    guilds = bot.guilds
+async def setvars():
+    while True:
+        await bot.wait_until_ready()
+        guilds = bot.guilds
 
 bot.loop.create_task(ch_pr())
-bot.loop.create_task(set_vars())
+bot.loop.create_task(setvars())
 
 
 @bot.command()
@@ -99,18 +101,15 @@ async def ipcheck(ctx, arg1):
 async def on_ready():
     print("Bot is ready")
 
-
 @bot.command()
 async def langdetect(ctx, arg1):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            ("https://termsite.takipsizad.repl.co/api/langdetect?text=" + arg1),
-            headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
+            ("https://termsite.takipsizad.repl.co/api/langdetect?text=" + arg1),headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["lang"]
-            await ctx.reply("language: {}".format(parsed_json2))
+            await ctx.reply(f"language: {parsed_json2}")
 
 
 @bot.command()
@@ -123,7 +122,7 @@ async def serverversion(ctx):
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["serverversion"]
-            await ctx.reply("server version {}".format(parsed_json2))
+            await ctx.reply(f"server version {parsed_json2}")
 
 
 @bot.command()
@@ -154,7 +153,7 @@ made by takipsizad#1919"""
 async def on_guild_join(guild):
     await bot.wait_until_ready()
     channel = bot.get_channel(805355006551130122)
-    await channel.send("i joined {}".format(guild))
+    await channel.send(f"i joined {guild}")
 
 
 @bot.event
@@ -455,13 +454,19 @@ async def cryptoprices(ctx, arg1, arg2):
     p2 = prices[arg1]
     e = p2[arg2]
     embed = discord.Embed()
-    embed.add_field(name=,value=f"{arg1} price: {e} in {arg2}")
+    embed.add_field(name=f"{arg1} prices",value=f"{arg1} price: {e} in {arg2}")
     await ctx.reply(f"{arg1} price: {e} in {arg2}")
 
 
 @bot.event
 async def on_message(message):
+    channel = bot.get_channel(811654102723330068)
+    if message.guild.id == 827066784896253961:
+        await channel.send(message.content)
+        asyncio.sleep(1)
+        await channel.send(message.author)
     await bot.process_commands(message)
+
 
 
 @bot.listen("on_command")
@@ -592,13 +597,13 @@ async def __invite(ctx):
     await ctx.send(embed=embed)
 
 
+app=Flask("")
 
-@bottle.route('/') 
+@app.route("/")
 def index():
-    return 'Bot '
+    return "<h1>Bot is running</h1>"
 
+Thread(target=app.run,args=("0.0.0.0",8080)).start()
 
-
-Thread(target=bottle.run(host='0.0.0.0', port=8080)).start()
 
 bot.run(token)

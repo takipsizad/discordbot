@@ -51,7 +51,7 @@ async def randomreddit(subreddits):
                 parsed_json4 = parsed_json3[random.randint(0,15)]
             parsed_json5 = parsed_json4['data']
             if True == parsed_json5['over_18']:
-                return embed.add_field(name='cant send +18 things ',value=':')
+                return embed.add_field(name='cant send +18 things ',value=':)')
             else:
                 if None == parsed_json5['removed_by_category']:
                     embed.title = parsed_json5['title']
