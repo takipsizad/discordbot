@@ -2,4 +2,4 @@
 .env #ignores .env files
 __pycache__
 .vscode
-voice.py
+*

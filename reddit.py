@@ -5,7 +5,7 @@ import random
 
 async def reddit(subreddit):
     async with aiohttp.ClientSession() as session:
-        async with session.get('https://www.reddit.com/r/{}/new/.json?count=25'.format(subreddit),headers ={'User-agent': 'Mozilla/5.0'}) as ct:
+        async with session.get(f'https://www.reddit.com/r/{subreddit}/new/.json?count=25',headers ={'User-agent': 'Mozilla/5.0'}) as ct:
             jsonr = json.dumps(await ct.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json['data']
@@ -31,7 +31,7 @@ async def reddit(subreddit):
                         except:
                             pass
                     embed.set_footer(text=f"Upvote ratio : {parsed_json5['upvote_ratio']}")
-                    embed.add_field(name='permanent link',value='https://reddit.com{}'.format(parsed_json5['permalink']))
+                    embed.add_field(name='permanent link',value=f"https://reddit.com{parsed_json5['permalink']}")
                     return embed
                 else: 
                     return embed.add_field(name='post is removed ',value='try again :)')
@@ -39,7 +39,7 @@ async def reddit(subreddit):
 
 async def randomreddit(subreddits):
     async with aiohttp.ClientSession() as session:
-        async with session.get('https://www.reddit.com/r/{}/new/.json?count=25'.format(random.choice(subreddits)),headers ={'User-agent': 'Mozilla/5.0'}) as ct:
+        async with session.get(f'https://www.reddit.com/r/{random.choice(subreddits)}/new/.json?count=25',headers ={'User-agent': 'Mozilla/5.0'}) as ct:
             jsonr = json.dumps(await ct.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json['data']
@@ -65,7 +65,7 @@ async def randomreddit(subreddits):
                         except:
                             pass
                     embed.set_footer(text=f"Upvote ratio : {parsed_json5['upvote_ratio']}")
-                    embed.add_field(name='permanent link',value='https://reddit.com{}'.format(parsed_json5['permalink']))
+                    embed.add_field(name='permanent link',value=f"https://reddit.com{parsed_json5['permalink']}")
                     return embed
                 else: 
                     return embed.add_field(name='post is removed ',value='try again :)')

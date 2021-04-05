@@ -25,6 +25,7 @@ from discord_slash import SlashCommand
 import discord_slash
 from threading import Thread
 from flask import Flask
+import psutil
 # importing local modules
 import reddit
 
@@ -88,9 +89,8 @@ async def ping(ctx):
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ipcheck(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://api.iplegit.com/info?ip=" + str(arg1),headers={"User-agent": "Mozilla/5.0"},) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+        async with session.get(f"https://api.iplegit.com/info?ip={str(arg1)}",headers={"User-agent": "Mozilla/5.0"},) as res:
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["bad"]
             parsed_json3 = parsed_json["type"]
             parsed_json4 = parsed_json["ip"]
@@ -104,8 +104,7 @@ async def on_ready():
 @bot.command()
 async def langdetect(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            ("https://termsite.takipsizad.repl.co/api/langdetect?text=" + arg1),headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get((f"https://termsite.takipsizad.repl.co/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["lang"]
@@ -115,12 +114,8 @@ async def langdetect(ctx, arg1):
 @bot.command()
 async def serverversion(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            ("https://termsite.takipsizad.repl.co/api/serverversion"),
-            headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+        async with session.get(("https://termsite.takipsizad.repl.co/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["serverversion"]
             await ctx.reply(f"server version {parsed_json2}")
 
@@ -130,6 +125,14 @@ async def execute(ctx, *, args):
     if ctx.author.id == 542380989775740929:
         output = eval(args)
         await ctx.reply(output)
+    else:
+        raise commands.NotOwner("")
+
+@bot.command()
+async def devinfo(ctx):
+    if ctx.author.id == 542380989775740929:
+        mem = psutil.virtual_memory()
+        await ctx.reply(f"""{mem}""")
     else:
         raise commands.NotOwner("")
 
@@ -160,7 +163,7 @@ async def on_guild_join(guild):
 async def on_guild_remove(guild):
     await bot.wait_until_ready()
     channel = bot.get_channel(805355006551130122)
-    await channel.send("i leaved {}".format(guild))
+    await channel.send(f"i leaved {guild}")
 
 
 @bot.command()
@@ -232,7 +235,7 @@ async def robloxad(ctx):
     url = random.choice(urls)
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
-            robloxadss = await robloxadsss.text()
+            robloxadss = await robloxadsss.read()
             soup = BeautifulSoup(robloxadss, features="html.parser")
             embed = discord.Embed()
             embed.set_image(url=soup.find("img")["src"])
@@ -334,13 +337,10 @@ async def eth(ctx):
 @eth.command()
 async def gasprice(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            ("https://ethapi.takipsizad.repl.co/api/v1/gasprices")
-        ) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+        async with session.get(("https://ethapi.takipsizad.repl.co/api/v1/gasprices")) as res:
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["gasprices"]
-            await ctx.reply("ethereum gas prices: {}".format(parsed_json2))
+            await ctx.reply(f"ethereum gas prices: {parsed_json2}")
 
 
 @bot.command()
@@ -348,42 +348,36 @@ async def web3version(ctx):
     async with aiohttp.ClientSession() as session:
         async with session.get(
             ("https://ethapi.takipsizad.repl.co/api/v1/version")) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["web3version"]
-            await ctx.reply("web3 js version : {}".format(parsed_json2))
+            await ctx.reply(f"web3 js version : {parsed_json2}")
 
 
 @eth.command()
 async def balance(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            (f"https://ethapi.takipsizad.repl.co/api/v1/checkbal?wallet={arg1}")) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/checkbal?wallet={arg1}")) as res:
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["balance"]
-            await ctx.reply("ethereum balance: {}".format(parsed_json2))
+            await ctx.reply(f"ethereum balance: {parsed_json2}")
 
 
 @eth.command()
 async def ibantoadress(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            (f"https://ethapi.takipsizad.repl.co/api/v1/ibantoadress?Iban={arg1}")) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/ibantoadress?Iban={arg1}")) as res:
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["adress"]
-            await ctx.reply("adress: {}".format(parsed_json2))
+            await ctx.reply(f"adress: {parsed_json2}")
 
 
 @eth.command()
 async def adresstoiban(ctx, arg1):
     async with aiohttp.ClientSession() as session:
         async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/adresstoiban?adress={arg1}")) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
+            parsed_json = await res.json()
             parsed_json2 = parsed_json["iban"]
-            await ctx.reply("Iban: {}".format(parsed_json2))
+            await ctx.reply(f"Iban: {parsed_json2}")
 
 
 @eth.command()
@@ -409,13 +403,15 @@ async def prices(ctx):
     prices = cg.get_price(ids="ethereum", vs_currencies="usd")
     p2 = prices["ethereum"]
     e = p2["usd"]
-    await ctx.reply("ethereum price: {} in usd".format(e))
+    await ctx.reply(f"ethereum price: {e} in usd")
 
 
 @bot.listen("on_command_error")
 async def on_command_error(ctx, error):
     # Unwrapping the error cause because of how discord.py raises some of them
     error = error.__cause__ or error
+    errors = []
+    errors.append(error)
     print(error)
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.reply(
@@ -434,6 +430,8 @@ async def on_command_error(ctx, error):
 async def on_slash_command_error(ctx, error):
     # Unwrapping the error cause because of how discord.py raises some of them
     error = error.__cause__ or error
+    errors = []
+    errors.append(error)
     print(error)
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.reply(
@@ -502,9 +500,7 @@ async def on_commsand(ctx):
 @bot.command()
 async def catfact(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            "https://cat-fact.herokuapp.com/facts/random",
-            headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get("https://cat-fact.herokuapp.com/facts/random",headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["text"]
@@ -583,7 +579,7 @@ async def __cryptoprices(ctx, cryptocurrency, currency):
     prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
     p2 = prices[cryptocurrency]
     e = p2[currency]
-    await ctx.send("{} price: {} in {}".format(cryptocurrency, e, currency))
+    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
 
 
 @slash.slash(name="invite", description="Invite command")
