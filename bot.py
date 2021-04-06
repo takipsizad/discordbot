@@ -27,7 +27,7 @@ from threading import Thread
 from flask import Flask
 import psutil
 # importing local modules
-from . import reddit
+import reddit
 
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
