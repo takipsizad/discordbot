@@ -27,7 +27,7 @@ from threading import Thread
 from flask import Flask
 import psutil
 # importing local modules
-import reddit
+from . import reddit
 
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
@@ -582,13 +582,13 @@ async def __cryptoprices(ctx, cryptocurrency, currency):
     await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
 
 
-@slash.slash(name="invite", description="Invite command")
-async def __invite(ctx):
+@slash.slash(name="support", description="Support command")
+async def __support(ctx):
     embed = discord.Embed()
     embed.title = "Invite link"
     embed.add_field(
-        name="Invite this bot for the bot",
-        value="[invite](http://bit.ly/takipsizadbot1)",
+        name="Support server",
+        value="[support](https://discord.gg/4uW3mTxx5S)",
     )
     await ctx.send(embed=embed)
 
