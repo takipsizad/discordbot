@@ -538,14 +538,14 @@ made by takipsizad#1919"""
     )
 
 
-#@slash.slash(name="reddit", description="Reddit command")
-#async def _redd_t(ctx, subreddit):
-#    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
-#    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
-#    if user_voted == True or is_premium_user is not None:
-#        await ctx.reply(embed=await reddit.reddit(subreddit))
-#    else:
-#        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
+@slash.slash(name="reddit", description="Reddit command")
+async def _redd_t(ctx, subreddit):
+    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
+    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
+    if user_voted == True or is_premium_user is not None:
+        await ctx.reply(embed=await reddit.reddit(subreddit))
+    else:
+        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
 
 
 
@@ -567,12 +567,12 @@ async def __donate(ctx):
     await ctx.send(embed=embed)
 
 
-#@slash.slash(name="cryptoprices", description="cryptoprice command")
-#async def __cryptoprices(ctx, cryptocurrency, currency):
-#    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
-#    p2 = prices[cryptocurrency]
-#    e = p2[currency]
-#    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
+@slash.slash(name="cryptoprices", description="cryptoprice command")
+async def __cryptoprices(ctx, cryptocurrency, currency):
+    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
+    p2 = prices[cryptocurrency]
+    e = p2[currency]
+    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
 
 
 @slash.slash(name="support", description="Support command")
