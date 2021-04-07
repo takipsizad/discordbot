@@ -23,12 +23,10 @@ import dbl
 import motor
 from discord_slash import SlashCommand
 import discord_slash
-from threading import Thread
 from flask import Flask
 import psutil
 # importing local modules
 import reddit
-
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -70,14 +68,6 @@ async def ch_pr():
             status=discord.Status.do_not_disturb, activity=statusss
         )
         await asyncio.sleep(30)
-
-async def setvars():
-    while True:
-        await bot.wait_until_ready()
-        guilds = bot.guilds
-
-bot.loop.create_task(ch_pr())
-bot.loop.create_task(setvars())
 
 
 @bot.command()
@@ -528,6 +518,9 @@ async def usecode(ctx, arg1):
     else:
         await ctx.reply("Invalid code")
 
+@bot.command()
+async def safebrowsing(ctx,arg1):
+    await ctx.reply(await safebrowsing.lookup_urls(arg1))
 
 @slash.slash(name="info", description="Info command")
 async def _info(ctx):
@@ -545,14 +538,14 @@ made by takipsizad#1919"""
     )
 
 
-@slash.slash(name="reddit", description="Reddit command")
-async def _redd_t(ctx, subreddit):
-    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
-    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
-    if user_voted == True or is_premium_user is not None:
-        await ctx.reply(embed=await reddit.reddit(subreddit))
-    else:
-        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
+#@slash.slash(name="reddit", description="Reddit command")
+#async def _redd_t(ctx, subreddit):
+#    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
+#    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
+#    if user_voted == True or is_premium_user is not None:
+#        await ctx.reply(embed=await reddit.reddit(subreddit))
+#    else:
+#        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
 
 
 
@@ -574,12 +567,12 @@ async def __donate(ctx):
     await ctx.send(embed=embed)
 
 
-@slash.slash(name="cryptoprices", description="cryptoprice command")
-async def __cryptoprices(ctx, cryptocurrency, currency):
-    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
-    p2 = prices[cryptocurrency]
-    e = p2[currency]
-    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
+#@slash.slash(name="cryptoprices", description="cryptoprice command")
+#async def __cryptoprices(ctx, cryptocurrency, currency):
+#    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
+#    p2 = prices[cryptocurrency]
+#    e = p2[currency]
+#    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
 
 
 @slash.slash(name="support", description="Support command")
@@ -598,8 +591,6 @@ app=Flask("")
 @app.route("/")
 def index():
     return "<h1>Bot is running</h1>"
-
 Thread(target=app.run,args=("0.0.0.0",8080)).start()
-
-
+bot.loop.create_task(ch_pr())
 bot.run(token)
