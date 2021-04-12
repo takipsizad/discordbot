@@ -7,9 +7,9 @@ import asyncio
 import random
 from threading import Thread
 import platform
+import uuid
 
 # import third party modules
-import uuid
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
