@@ -2,6 +2,8 @@ from discord.ext import commands
 from dpymenus import Page, PaginatedMenu
 from os.path import join, dirname
 from dotenv import load_dotenv
+from discord.ext import commands
+import discord
 import motor
 import os
 db = os.getenv("db")
@@ -72,10 +74,10 @@ class help(commands.Cog):
         menu.add_pages([page1, page2, page3,page4,page5,page6])
         xx = {f"{ctx.author.id}":"true"}
         x = await tos.find_one(xx)
-        if not None == x:
+        if not None is x:
             await menu.open()
         else:
-            discord.Embed()
+            embed = discord.Embed()
             embed.title = "Verify"
             embed.add_field(name="by using my bot you agree rules",value="[rules](https://gist.github.com/takipsizad/4a2755e12c31a9495c417370b956f363)")
             embed.add_field(name="Dont forget to donate for my bot",value="my ethereum adress 0xf667485f542185d2c27B897E660a589a37b21FCc")

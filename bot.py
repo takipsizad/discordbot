@@ -42,6 +42,7 @@ prmc = mydb.premiumcode
 premium = mydb.premium
 bot.remove_command("help")
 bot.load_extension("help")
+bot.load_extension("safeeval")
 bot.load_extension("jishaku")
 
 
@@ -324,13 +325,7 @@ async def eth(ctx):
         await ctx.reply("Invalid ethereum command passed...")
 
 
-@eth.command()
-async def gasprice(ctx):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(("https://ethapi.takipsizad.repl.co/api/v1/gasprices")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["gasprices"]
-            await ctx.reply(f"ethereum gas prices: {parsed_json2}")
+
 
 
 @bot.command()
@@ -517,10 +512,6 @@ async def usecode(ctx, arg1):
         await premium.insert_one({str(ctx.author.id): "true"})
     else:
         await ctx.reply("Invalid code")
-
-@bot.command()
-async def safebrowsing(ctx,arg1):
-    await ctx.reply(await safebrowsing.lookup_urls(arg1))
 
 @slash.slash(name="info", description="Info command")
 async def _info(ctx):
