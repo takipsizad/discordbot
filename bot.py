@@ -45,7 +45,7 @@ bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
-resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8"])
+resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"])
 conn = aiohttp.TCPConnector(resolver=resolver)
 
 dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
@@ -341,9 +341,9 @@ async def web3version(ctx):
 
 
 @eth.command()
-async def gasprices(ctx, arg1):
+async def gasprices(ctx):
     async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
+        async with session.get((f"https://www.ethereumapi.tk/api/v1/gasprices")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["gasprices"]
             await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
@@ -351,7 +351,7 @@ async def gasprices(ctx, arg1):
 @eth.command()
 async def balance(ctx, arg1):
     async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://wwww.ethereumapi.tk/api/v1/gasprices")) as res:
+        async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["balance"]
             await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
