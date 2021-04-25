@@ -23,6 +23,7 @@ import dbl
 import motor
 from discord_slash import SlashCommand
 import discord_slash
+from aiohttp.resolver import AsyncResolver
 from flask import Flask
 import psutil
 # importing local modules
@@ -44,7 +45,8 @@ bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
-
+resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8"])
+conn = aiohttp.TCPConnector(resolver=resolver)
 
 dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
 
@@ -79,7 +81,7 @@ async def ping(ctx):
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ipcheck(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get(f"https://api.iplegit.com/info?ip={str(arg1)}",headers={"User-agent": "Mozilla/5.0"},) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["bad"]
@@ -94,8 +96,8 @@ async def on_ready():
 
 @bot.command()
 async def langdetect(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://termsite.takipsizad.repl.co/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
+    async with aiohttp.ClientSession(connector=conn) as session:
+        async with session.get((f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["lang"]
@@ -105,7 +107,7 @@ async def langdetect(ctx, arg1):
 @bot.command()
 async def serverversion(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get(("https://termsite.takipsizad.repl.co/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
+        async with session.get(("https://termsite.takipsizad.tk/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["serverversion"]
             await ctx.reply(f"server version {parsed_json2}")
@@ -224,7 +226,7 @@ async def robloxad(ctx):
         "https://www.roblox.com/user-sponsorship/3",
     ]
     url = random.choice(urls)
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
             robloxadss = await robloxadsss.read()
             soup = BeautifulSoup(robloxadss, features="html.parser")
@@ -330,7 +332,7 @@ async def eth(ctx):
 
 @bot.command()
 async def web3version(ctx):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get(
             ("https://www.ethereumapi.tk/api/v1/version")) as res:
             parsed_json = await res.json()
@@ -340,7 +342,7 @@ async def web3version(ctx):
 
 @eth.command()
 async def gasprices(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["gasprices"]
@@ -348,7 +350,7 @@ async def gasprices(ctx, arg1):
 
 @eth.command()
 async def balance(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get((f"https://wwww.ethereumapi.tk/api/v1/gasprices")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["balance"]
@@ -356,7 +358,7 @@ async def balance(ctx, arg1):
 
 @eth.command()
 async def ibantoadress(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get((f"https://www.ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["adress"]
@@ -365,7 +367,7 @@ async def ibantoadress(ctx, arg1):
 
 @eth.command()
 async def adresstoiban(ctx, arg1):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get((f"https://www.ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["iban"]
@@ -375,7 +377,7 @@ async def adresstoiban(ctx, arg1):
 @eth.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get("https://www.ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
