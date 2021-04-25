@@ -74,7 +74,7 @@ class help(commands.Cog):
         menu.add_pages([page1, page2, page3,page4,page5,page6])
         xx = {f"{ctx.author.id}":"true"}
         x = await tos.find_one(xx)
-        if not None is x:
+        if not x is None:
             await menu.open()
         else:
             embed = discord.Embed()

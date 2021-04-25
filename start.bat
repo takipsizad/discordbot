@@ -1,1 +1,1 @@
-python bot.py
+pm2 start bot.py

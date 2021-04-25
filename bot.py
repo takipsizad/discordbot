@@ -42,7 +42,7 @@ prmc = mydb.premiumcode
 premium = mydb.premium
 bot.remove_command("help")
 bot.load_extension("help")
-bot.load_extension("safeeval")
+#bot.load_extension("safeeval")
 bot.load_extension("jishaku")
 
 
@@ -203,7 +203,7 @@ async def invite(ctx):
     embed.title = "Invite link"
     embed.add_field(
         name="Invite this bot for the bot",
-        value="[invite](http://bit.ly/takipsizadbot1)",
+        value="[invite](https://takipsizadbot.page.link/invite)",
     )
     await ctx.reply(embed=embed)
 
@@ -332,7 +332,7 @@ async def eth(ctx):
 async def web3version(ctx):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            ("https://ethapi.takipsizad.repl.co/api/v1/version")) as res:
+            ("https://ethereumapi.tk/api/v1/version")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["web3version"]
             await ctx.reply(f"web3 js version : {parsed_json2}")
@@ -341,7 +341,7 @@ async def web3version(ctx):
 @eth.command()
 async def balance(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/checkbal?wallet={arg1}")) as res:
+        async with session.get((f"https://ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["balance"]
             await ctx.reply(f"ethereum balance: {parsed_json2}")
@@ -350,7 +350,7 @@ async def balance(ctx, arg1):
 @eth.command()
 async def ibantoadress(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/ibantoadress?Iban={arg1}")) as res:
+        async with session.get((f"https://ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["adress"]
             await ctx.reply(f"adress: {parsed_json2}")
@@ -359,7 +359,7 @@ async def ibantoadress(ctx, arg1):
 @eth.command()
 async def adresstoiban(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethapi.takipsizad.repl.co/api/v1/adresstoiban?adress={arg1}")) as res:
+        async with session.get((f"https://ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["iban"]
             await ctx.reply(f"Iban: {parsed_json2}")
@@ -369,7 +369,7 @@ async def adresstoiban(ctx, arg1):
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://ethapi.takipsizad.repl.co/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get("https://ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["acc"]
@@ -585,3 +585,4 @@ def index():
 Thread(target=app.run,args=("0.0.0.0",8080)).start()
 bot.loop.create_task(ch_pr())
 bot.run(token)
+Thread(target=bot.run,args=(token)).start()
