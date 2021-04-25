@@ -28,27 +28,38 @@ from flask import Flask
 import psutil
 # importing local modules
 import reddit
+
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 ıntents = discord.Intents.all()
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=ıntents)
-slash = SlashCommand(bot, sync_commands=True)
+
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")
 db = os.getenv("db")
+
+
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=ıntents)
+dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
 client = motor.motor_tornado.MotorClient(db)
+slash = SlashCommand(bot, sync_commands=True)
+
+
+
 mydb = client["db"]
 prmc = mydb.premiumcode
 premium = mydb.premium
+
 bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
+
 resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"])
 conn = aiohttp.TCPConnector(resolver=resolver)
 
-dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
+session = aiohttp.ClientSession(connector=conn)
+
 
 
 async def ch_pr():
@@ -81,13 +92,12 @@ async def ping(ctx):
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ipcheck(ctx, arg1):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get(f"https://api.iplegit.com/info?ip={str(arg1)}",headers={"User-agent": "Mozilla/5.0"},) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["bad"]
-            parsed_json3 = parsed_json["type"]
-            parsed_json4 = parsed_json["ip"]
-            await ctx.reply(f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}")
+    async with session.get(f"https://api.iplegit.com/info?ip={str(arg1)}",headers={"User-agent": "Mozilla/5.0"},) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["bad"]
+        parsed_json3 = parsed_json["type"]
+        parsed_json4 = parsed_json["ip"]
+        await ctx.reply(f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}")
 
 
 @bot.event
@@ -96,22 +106,19 @@ async def on_ready():
 
 @bot.command()
 async def langdetect(ctx, arg1):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
-            parsed_json2 = parsed_json["lang"]
-            await ctx.reply(f"language: {parsed_json2}")
+    async with session.get((f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
+        jsonr = json.dumps(await res.json())
+        parsed_json = json.loads(jsonr)
+        parsed_json2 = parsed_json["lang"]
+        await ctx.reply(f"language: {parsed_json2}")
 
 
 @bot.command()
 async def serverversion(ctx):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(("https://termsite.takipsizad.tk/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["serverversion"]
-            await ctx.reply(f"server version {parsed_json2}")
-
+    async with session.get(("https://termsite.takipsizad.tk/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["serverversion"]
+        await ctx.reply(f"server version {parsed_json2}")
 
 @bot.command()
 async def execute(ctx, *, args):
@@ -226,14 +233,12 @@ async def robloxad(ctx):
         "https://www.roblox.com/user-sponsorship/3",
     ]
     url = random.choice(urls)
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
-            robloxadss = await robloxadsss.read()
-            soup = BeautifulSoup(robloxadss, features="html.parser")
-            embed = discord.Embed()
-            embed.set_image(url=soup.find("img")["src"])
-            await ctx.reply(embed=embed)
-
+    async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
+        robloxadss = await robloxadsss.read()
+        soup = BeautifulSoup(robloxadss, features="html.parser")
+        embed = discord.Embed()
+        embed.set_image(url=soup.find("img")["src"])
+        await ctx.reply(embed=embed)
 
 @bot.command()
 async def ytinfo(ctx, arg1):
@@ -342,54 +347,47 @@ async def web3version(ctx):
 
 @eth.command()
 async def gasprices(ctx):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://www.ethereumapi.tk/api/v1/gasprices")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["gasprices"]
-            await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
+    async with session.get((f"https://www.ethereumapi.tk/api/v1/gasprices")) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["gasprices"]
+        await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
 
 @eth.command()
 async def balance(ctx, arg1):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["balance"]
-            await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
+    async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["balance"]
+        await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
 
 @eth.command()
 async def ibantoadress(ctx, arg1):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://www.ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["adress"]
-            await ctx.reply(f"adress: {parsed_json2}")
-
+    async with session.get((f"https://www.ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["adress"]
+        await ctx.reply(f"adress: {parsed_json2}")
 
 @eth.command()
 async def adresstoiban(ctx, arg1):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get((f"https://www.ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["iban"]
-            await ctx.reply(f"Iban: {parsed_json2}")
-
+    async with session.get((f"https://www.ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["iban"]
+        await ctx.reply(f"Iban: {parsed_json2}")
 
 @eth.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get("https://www.ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
-            jsonr = json.dumps(await res.json())
-            parsed_json = json.loads(jsonr)
-            parsed_json2 = parsed_json["acc"]
-            parsed_json3 = parsed_json2["address"]
-            parsed_json4 = parsed_json2["privateKey"]
-            await ctx.author.send(
-                "adress:`{0}` \n private key  **dont share with anyone** `{1}`".format(
-                    parsed_json3, parsed_json4
-                )
+    async with session.get("https://www.ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+        jsonr = json.dumps(await res.json())
+        parsed_json = json.loads(jsonr)
+        parsed_json2 = parsed_json["acc"]
+        parsed_json3 = parsed_json2["address"]
+        parsed_json4 = parsed_json2["privateKey"]
+        await ctx.author.send(
+            "adress:`{0}` \n private key  **dont share with anyone** `{1}`".format(
+                parsed_json3, parsed_json4
             )
-            await ctx.reply(" i send it from dms")
+        )
+        await ctx.reply(" i send it from dms")
 
 
 @eth.command()
