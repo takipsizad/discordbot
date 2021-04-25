@@ -17,6 +17,7 @@ jishaku = "^1.20.0"
 bs4 = "^0.0.1"
 tornado = "^6.1"
 discord-py-slash-command = "^1.1.0"
+aiodns = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 

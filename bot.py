@@ -452,11 +452,6 @@ async def cryptoprices(ctx, arg1, arg2):
 
 @bot.event
 async def on_message(message):
-    channel = bot.get_channel(811654102723330068)
-    if message.guild.id == 827066784896253961:
-        await channel.send(message.content)
-        asyncio.sleep(1)
-        await channel.send(message.author)
     await bot.process_commands(message)
 
 
