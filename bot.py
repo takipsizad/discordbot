@@ -332,25 +332,32 @@ async def eth(ctx):
 async def web3version(ctx):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            ("https://ethereumapi.tk/api/v1/version")) as res:
+            ("https://www.ethereumapi.tk/api/v1/version")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["web3version"]
             await ctx.reply(f"web3 js version : {parsed_json2}")
 
 
 @eth.command()
+async def gasprices(ctx, arg1):
+    async with aiohttp.ClientSession() as session:
+        async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
+            parsed_json = await res.json()
+            parsed_json2 = parsed_json["gasprices"]
+            await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
+
+@eth.command()
 async def balance(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
+        async with session.get((f"https://wwww.ethereumapi.tk/api/v1/gasprices")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["balance"]
-            await ctx.reply(f"ethereum balance: {parsed_json2}")
-
+            await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
 
 @eth.command()
 async def ibantoadress(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
+        async with session.get((f"https://www.ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["adress"]
             await ctx.reply(f"adress: {parsed_json2}")
@@ -359,7 +366,7 @@ async def ibantoadress(ctx, arg1):
 @eth.command()
 async def adresstoiban(ctx, arg1):
     async with aiohttp.ClientSession() as session:
-        async with session.get((f"https://ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
+        async with session.get((f"https://www.ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["iban"]
             await ctx.reply(f"Iban: {parsed_json2}")
@@ -369,7 +376,7 @@ async def adresstoiban(ctx, arg1):
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get("https://www.ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["acc"]
