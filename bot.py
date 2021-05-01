@@ -45,6 +45,7 @@ bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
+bot.load_extension("reddit")
 resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"])
 conn = aiohttp.TCPConnector(resolver=resolver)
 
