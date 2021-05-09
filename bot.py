@@ -78,8 +78,7 @@ async def ch_pr():
         "random things go","i hate c++ WHAT İS cout <<string","bruh","c is better then c++ change my mind","idk lol" "sike","eeee",
         "batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout <<","(¬_¬)"," this bot wont get verified","Usb stick",
         "discord moment","powered by discord.py","discord.py included ","just invite the bot to setup","dont watch my status",
-            f"l","bored","i am bored but idk "
-        ]
+            f"l","bored","i am bored but idk "]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(
             status=discord.Status.do_not_disturb, activity=statusss
@@ -150,7 +149,7 @@ discord slash version  {discord_slash.__version__}
 motor (mongodb) version  {motor.version}
 os version {platform.platform(aliased=0, terse=0)}
 python info {platform.python_implementation()} {platform.python_version()}
-on {len(bot.guilds)} guilds 
+on {len(bot.guilds)} guilds
 made by takipsizad#1919"""
     )
 
