@@ -45,7 +45,7 @@ class help(commands.Cog):
         ta!!mcmemes
         ta!!madlads
         ta!!meme
-		ta!!all
+        ta!!all
         ta!!facepalm
         ta!!reddit <subreddit>
         """)
@@ -74,7 +74,7 @@ class help(commands.Cog):
         menu.add_pages([page1, page2, page3,page4,page5,page6])
         xx = {f"{ctx.author.id}":"true"}
         x = await tos.find_one(xx)
-        if not x is None:
+        if  x is not None:
             await menu.open()
         else:
             embed = discord.Embed()
