@@ -54,10 +54,15 @@ bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
+<<<<<<< Updated upstream
 resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"])
+=======
+resolver = AsyncResolver() #nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"]
+>>>>>>> Stashed changes
 conn = aiohttp.TCPConnector(resolver=resolver)
 
-session = aiohttp.ClientSession(connector=conn)
+loop = asyncio.get_event_loop()
+session = aiohttp.ClientSession()
 
 
 
@@ -237,6 +242,7 @@ async def robloxad(ctx):
         soup = BeautifulSoup(robloxadss, features="html.parser")
         embed = discord.Embed()
         embed.set_image(url=soup.find("img")["src"])
+        embed.add_field(name=f'{soup.find("a")["title"]}',value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})')
         await ctx.reply(embed=embed)
 
 @bot.command()
@@ -338,7 +344,7 @@ async def eth(ctx):
 async def web3version(ctx):
     async with aiohttp.ClientSession(connector=conn) as session:
         async with session.get(
-            ("https://www.ethereumapi.tk/api/v1/version")) as res:
+            ("https://ethapi.takipsizad.tk/api/v1/version")) as res:
             parsed_json = await res.json()
             parsed_json2 = parsed_json["web3version"]
             await ctx.reply(f"web3 js version : {parsed_json2}")
@@ -346,28 +352,28 @@ async def web3version(ctx):
 
 @eth.command()
 async def gasprices(ctx):
-    async with session.get((f"https://www.ethereumapi.tk/api/v1/gasprices")) as res:
+    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/gasprices")) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["gasprices"]
         await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
 
 @eth.command()
 async def balance(ctx, arg1):
-    async with session.get((f"https://www.ethereumapi.tk/api/v1/checkbal?wallet={arg1}")) as res:
+    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/checkbal?wallet={arg1}")) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["balance"]
         await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
 
 @eth.command()
 async def ibantoadress(ctx, arg1):
-    async with session.get((f"https://www.ethereumapi.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
+    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["adress"]
         await ctx.reply(f"adress: {parsed_json2}")
 
 @eth.command()
 async def adresstoiban(ctx, arg1):
-    async with session.get((f"https://www.ethereumapi.tk/api/v1/adresstoiban?adress={arg1}")) as res:
+    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/adresstoiban?adress={arg1}")) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["iban"]
         await ctx.reply(f"Iban: {parsed_json2}")
@@ -375,7 +381,7 @@ async def adresstoiban(ctx, arg1):
 @eth.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
-    async with session.get("https://www.ethereumapi.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+    async with session.get("https://ethapi.takipsizad.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
         jsonr = json.dumps(await res.json())
         parsed_json = json.loads(jsonr)
         parsed_json2 = parsed_json["acc"]
@@ -516,7 +522,6 @@ async def usecode(ctx, arg1):
 
 @slash.slash(name="info", description="Info command")
 async def _info(ctx):
-    await ctx.respond()
     await ctx.send(
         f"""
 discord py version {discord.__version__}
@@ -535,9 +540,9 @@ async def _redd_t(ctx, subreddit):
     user_voted = await dble.get_user_vote(user_id=ctx.author.id)
     is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
     if user_voted == True or is_premium_user is not None:
-        await ctx.reply(embed=await reddit.reddit(subreddit))
+        await ctx.send(embed=await reddit.reddit(subreddit))
     else:
-        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
+        await ctx.send("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
 
 
 
