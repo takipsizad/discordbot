@@ -54,17 +54,16 @@ bot.remove_command("help")
 bot.load_extension("help")
 #bot.load_extension("safeeval")
 bot.load_extension("jishaku")
-<<<<<<< Updated upstream
-resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"])
-=======
-resolver = AsyncResolver() #nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"]
->>>>>>> Stashed changes
-conn = aiohttp.TCPConnector(resolver=resolver)
 
 loop = asyncio.get_event_loop()
 session = aiohttp.ClientSession()
 
 
+
+async def dnsset_():
+    resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"]) 
+    conn = aiohttp.TCPConnector(resolver=resolver)
+loop.run_until_complete(dnsset_())
 
 async def ch_pr():
     await bot.wait_until_ready()
