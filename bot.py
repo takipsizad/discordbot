@@ -32,14 +32,14 @@ import reddit
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-ıntents = discord.Intents.all()
+intents = discord.Intents.all()
 
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")
 db = os.getenv("db")
 
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=ıntents)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=intents)
 dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
 client = motor.motor_tornado.MotorClient(db)
 slash = SlashCommand(bot, sync_commands=True)
@@ -340,13 +340,11 @@ async def eth(ctx):
 
 @bot.command()
 async def web3version(ctx):
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get(
-            ("https://ethapi.takipsizad.tk/api/v1/version")) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["web3version"]
-            await ctx.reply(f"web3 js version : {parsed_json2}")
-
+    async with session.get(
+        ("https://ethapi.takipsizad.tk/api/v1/version")) as res:
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["web3version"]
+        await ctx.reply(f"web3 js version : {parsed_json2}")
 
 @eth.command()
 async def gasprices(ctx):
