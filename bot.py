@@ -45,7 +45,6 @@ client = motor.motor_tornado.MotorClient(db)
 slash = SlashCommand(bot, sync_commands=True)
 
 
-
 mydb = client["db"]
 prmc = mydb.premiumcode
 premium = mydb.premium
@@ -57,7 +56,6 @@ bot.load_extension("jishaku")
 
 loop = asyncio.get_event_loop()
 session = aiohttp.ClientSession()
-
 
 
 async def dnsset_():
