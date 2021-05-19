@@ -1,16 +1,16 @@
-#from RestrictedPython import compile_restricted
+# from RestrictedPython import compile_restricted
 #
-#from RestrictedPython import __builtins__
-#from RestrictedPython import limited_builtins
-#from RestrictedPython import utility_builtins
-#import discord
-#from discord.ext import commands
-#
-#
+# from RestrictedPython import __builtins__
+# from RestrictedPython import limited_builtins
+# from RestrictedPython import utility_builtins
+# import discord
+# from discord.ext import commands
 #
 #
 #
-#class safeeval(commands.Cog):
+#
+#
+# class safeeval(commands.Cog):
 #    def __init__(self, bot):
 #        self.bot=bot
 #
@@ -40,5 +40,5 @@
 #            await ctx.send(e)
 #
 #
-#def setup(bot):
+# def setup(bot):
 #    bot.add_cog(safeeval(bot))

@@ -19,13 +19,16 @@ from pytube import YouTube
 import aiohttp
 from pycoingecko import CoinGeckoAPI
 import jishaku
-import dbl
+import topgg
 import motor
 from discord_slash import SlashCommand
 import discord_slash
 from aiohttp.resolver import AsyncResolver
 from flask import Flask
 import psutil
+from functools import lru_cache
+import timeit
+
 # importing local modules
 import reddit
 
@@ -40,7 +43,7 @@ db = os.getenv("db")
 
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=intents)
-dble = dbl.DBLClient(bot=bot, token=dbltoken, autopost=True)
+dble = topgg.DBLClient(bot=bot, token=dbltoken, autopost=True)
 client = motor.motor_tornado.MotorClient(db)
 slash = SlashCommand(bot, sync_commands=True)
 
@@ -51,17 +54,30 @@ premium = mydb.premium
 
 bot.remove_command("help")
 bot.load_extension("help")
-#bot.load_extension("safeeval")
+# bot.load_extension("safeeval")
 bot.load_extension("jishaku")
 
 loop = asyncio.get_event_loop()
-session = aiohttp.ClientSession()
 
 
 async def dnsset_():
-    resolver = AsyncResolver(nameservers=["80.80.80.80", "80.80.81.81","8.8.4.4","8.8.8.8","1.1.1.1","1.0.0.1"]) 
+    resolver = AsyncResolver(
+        nameservers=[
+            "80.80.80.80",
+            "80.80.81.81",
+            "8.8.4.4",
+            "8.8.8.8",
+            "1.1.1.1",
+            "1.0.0.1",
+        ]
+    )
+    global session
     conn = aiohttp.TCPConnector(resolver=resolver)
+    session = aiohttp.ClientSession(connector=conn)
+
+
 loop.run_until_complete(dnsset_())
+
 
 async def ch_pr():
     await bot.wait_until_ready()
@@ -92,33 +108,48 @@ async def ping(ctx):
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ipcheck(ctx, arg1):
-    async with session.get(f"https://api.iplegit.com/info?ip={str(arg1)}",headers={"User-agent": "Mozilla/5.0"},) as res:
+    async with session.get(
+        f"https://api.iplegit.com/info?ip={str(arg1)}",
+        headers={"User-agent": "Mozilla/5.0"},
+    ) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["bad"]
         parsed_json3 = parsed_json["type"]
         parsed_json4 = parsed_json["ip"]
-        await ctx.reply(f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}")
+        await ctx.reply(
+            f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}"
+        )
 
 
 @bot.event
 async def on_ready():
     print("Bot is ready")
 
+
+@lru_cache(maxsize=None)
 @bot.command()
 async def langdetect(ctx, arg1):
-    async with session.get((f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),headers={"User-agent": "Mozilla/5.0"},) as res:
+    async with session.get(
+        (f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),
+        headers={"User-agent": "Mozilla/5.0"},
+    ) as res:
         jsonr = json.dumps(await res.json())
         parsed_json = json.loads(jsonr)
         parsed_json2 = parsed_json["lang"]
         await ctx.reply(f"language: {parsed_json2}")
 
 
+@lru_cache(maxsize=1)
 @bot.command()
 async def serverversion(ctx):
-    async with session.get(("https://termsite.takipsizad.tk/api/serverversion"),headers={"User-agent": "Mozilla/5.0"}) as res:
+    async with session.get(
+        ("https://termsite.takipsizad.tk/api/serverversion"),
+        headers={"User-agent": "Mozilla/5.0"},
+    ) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["serverversion"]
         await ctx.reply(f"server version {parsed_json2}")
+
 
 @bot.command()
 async def execute(ctx, *, args):
@@ -127,6 +158,7 @@ async def execute(ctx, *, args):
         await ctx.reply(output)
     else:
         raise commands.NotOwner("")
+
 
 @bot.command()
 async def devinfo(ctx):
@@ -157,6 +189,20 @@ async def on_guild_join(guild):
     await bot.wait_until_ready()
     channel = bot.get_channel(805355006551130122)
     await channel.send(f"i joined {guild}")
+
+
+@bot.event
+async def on_ready():
+    await bot.wait_until_ready()
+    channel = bot.get_channel(805355006551130122)
+    await channel.send("ready")
+
+
+@bot.event
+async def on_connect():
+    await bot.wait_until_ready()
+    channel = bot.get_channel(805355006551130122)
+    await channel.send("connecting")
 
 
 @bot.event
@@ -225,6 +271,7 @@ async def http(ctx, arg1):
     await ctx.reply(embed=embed)
 
 
+@lru_cache(maxsize=None)
 @bot.command()
 async def robloxad(ctx):
     urls = [
@@ -238,17 +285,22 @@ async def robloxad(ctx):
         soup = BeautifulSoup(robloxadss, features="html.parser")
         embed = discord.Embed()
         embed.set_image(url=soup.find("img")["src"])
-        embed.add_field(name=f'{soup.find("a")["title"]}',value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})')
+        embed.add_field(
+            name=f'{soup.find("a")["title"]}',
+            value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})',
+        )
         await ctx.reply(embed=embed)
+
 
 @bot.command()
 async def ytinfo(ctx, arg1):
     try:
         yt = YouTube(arg1)
         await ctx.reply(
-        f"""```link {arg1} \ntitle: {yt.title}
+            f"""```link {arg1} \ntitle: {yt.title}
         \nauthor: {yt.author} \ndescription:\n {yt.description} \nmetadata: 
-        {yt.metadata} \npublish date: {yt.publish_date} \nrating: {yt.rating} \nviews: {yt.views}```""")
+        {yt.metadata} \npublish date: {yt.publish_date} \nrating: {yt.rating} \nviews: {yt.views}```"""
+        )
     except:
         await ctx.reply("error  make sure to enter valid link")
 
@@ -275,7 +327,9 @@ async def reddt(ctx, arg1):
     if user_voted == True or is_premium_user is not None:
         await ctx.reply(embed=await reddit.reddit(arg1))
     else:
-        await ctx.reply("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
+        await ctx.reply(
+            "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
+        )
 
 
 @bot.command(aliases=["meme"])
@@ -333,16 +387,13 @@ async def eth(ctx):
         await ctx.reply("Invalid ethereum command passed...")
 
 
-
-
-
 @bot.command()
 async def web3version(ctx):
-    async with session.get(
-        ("https://ethapi.takipsizad.tk/api/v1/version")) as res:
+    async with session.get(("https://ethapi.takipsizad.tk/api/v1/version")) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["web3version"]
         await ctx.reply(f"web3 js version : {parsed_json2}")
+
 
 @eth.command()
 async def gasprices(ctx):
@@ -351,31 +402,44 @@ async def gasprices(ctx):
         parsed_json2 = parsed_json["gasprices"]
         await ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
 
+
 @eth.command()
 async def balance(ctx, arg1):
-    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/checkbal?wallet={arg1}")) as res:
+    async with session.get(
+        (f"https://ethapi.takipsizad.tk/api/v1/checkbal?wallet={arg1}")
+    ) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["balance"]
         await ctx.reply(f"ethereum gas prices: {parsed_json2} ***in wei***")
 
+
 @eth.command()
 async def ibantoadress(ctx, arg1):
-    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/ibantoadress?Iban={arg1}")) as res:
+    async with session.get(
+        (f"https://ethapi.takipsizad.tk/api/v1/ibantoadress?Iban={arg1}")
+    ) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["adress"]
         await ctx.reply(f"adress: {parsed_json2}")
 
+
 @eth.command()
 async def adresstoiban(ctx, arg1):
-    async with session.get((f"https://ethapi.takipsizad.tk/api/v1/adresstoiban?adress={arg1}")) as res:
+    async with session.get(
+        (f"https://ethapi.takipsizad.tk/api/v1/adresstoiban?adress={arg1}")
+    ) as res:
         parsed_json = await res.json()
         parsed_json2 = parsed_json["iban"]
         await ctx.reply(f"Iban: {parsed_json2}")
 
+
 @eth.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def createaccount(ctx):
-    async with session.get("https://ethapi.takipsizad.tk/api/v1/createacc",headers={"User-agent": "Mozilla/5.0"},) as res:
+    async with session.get(
+        "https://ethapi.takipsizad.tk/api/v1/createacc",
+        headers={"User-agent": "Mozilla/5.0"},
+    ) as res:
         jsonr = json.dumps(await res.json())
         parsed_json = json.loads(jsonr)
         parsed_json2 = parsed_json["acc"]
@@ -443,14 +507,13 @@ async def cryptoprices(ctx, arg1, arg2):
     p2 = prices[arg1]
     e = p2[arg2]
     embed = discord.Embed()
-    embed.add_field(name=f"{arg1} prices",value=f"{arg1} price: {e} in {arg2}")
+    embed.add_field(name=f"{arg1} prices", value=f"{arg1} price: {e} in {arg2}")
     await ctx.reply(f"{arg1} price: {e} in {arg2}")
 
 
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
-
 
 
 @bot.listen("on_command")
@@ -486,7 +549,10 @@ async def on_commsand(ctx):
 @bot.command()
 async def catfact(ctx):
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://cat-fact.herokuapp.com/facts/random",headers={"User-agent": "Mozilla/5.0"},) as res:
+        async with session.get(
+            "https://cat-fact.herokuapp.com/facts/random",
+            headers={"User-agent": "Mozilla/5.0"},
+        ) as res:
             jsonr = json.dumps(await res.json())
             parsed_json = json.loads(jsonr)
             parsed_json2 = parsed_json["text"]
@@ -514,6 +580,7 @@ async def usecode(ctx, arg1):
     else:
         await ctx.reply("Invalid code")
 
+
 @slash.slash(name="info", description="Info command")
 async def _info(ctx):
     await ctx.send(
@@ -530,15 +597,15 @@ made by takipsizad#1919"""
 
 
 @slash.slash(name="reddit", description="Reddit command")
-async def _redd_t(ctx, subreddit):
+async def _redd_t(ctx, subreddit: str):
     user_voted = await dble.get_user_vote(user_id=ctx.author.id)
     is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
     if user_voted == True or is_premium_user is not None:
         await ctx.send(embed=await reddit.reddit(subreddit))
     else:
-        await ctx.send("You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote")
-
-
+        await ctx.send(
+            "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
+        )
 
 
 @slash.slash(name="donate", description="Donate command")
@@ -559,7 +626,7 @@ async def __donate(ctx):
 
 
 @slash.slash(name="cryptoprices", description="cryptoprice command")
-async def __cryptoprices(ctx, cryptocurrency, currency):
+async def __cryptoprices(ctx, cryptocurrency: str, currency: str):
     prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
     p2 = prices[cryptocurrency]
     e = p2[currency]
@@ -577,12 +644,15 @@ async def __support(ctx):
     await ctx.send(embed=embed)
 
 
-app=Flask("")
+app = Flask("")
+
 
 @app.route("/")
 def index():
     return "<h1>Bot is running</h1>"
-Thread(target=app.run,args=("0.0.0.0",8080)).start()
+
+
+Thread(target=app.run, args=("0.0.0.0", 8080)).start()
 bot.loop.create_task(ch_pr())
 bot.run(token)
-Thread(target=bot.run,args=(token)).start()
+Thread(target=bot.run, args=(token)).start()
