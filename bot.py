@@ -139,7 +139,7 @@ async def langdetect(ctx, arg1):
         await ctx.reply(f"language: {parsed_json2}")
 
 
-@lru_cache(maxsize=1)
+@lru_cache(maxsize=None)
 @bot.command()
 async def serverversion(ctx):
     async with session.get(
