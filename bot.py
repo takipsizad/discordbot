@@ -28,9 +28,7 @@ from flask import Flask
 import psutil
 from functools import lru_cache
 import timeit
-
-# importing local modules
-import reddit
+import utils.http
 
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
@@ -53,30 +51,16 @@ prmc = mydb.premiumcode
 premium = mydb.premium
 
 bot.remove_command("help")
-bot.load_extension("help")
 # bot.load_extension("safeeval")
 bot.load_extension("jishaku")
 
 loop = asyncio.get_event_loop()
 
+for file in os.listdir("cogs"):
+    if file.endswith(".py"):
+        name = file[:-3]
+        bot.load_extension(f"cogs.{name}")
 
-async def dnsset_():
-    resolver = AsyncResolver(
-        nameservers=[
-            "80.80.80.80",
-            "80.80.81.81",
-            "8.8.4.4",
-            "8.8.8.8",
-            "1.1.1.1",
-            "1.0.0.1",
-        ]
-    )
-    global session
-    conn = aiohttp.TCPConnector(resolver=resolver)
-    session = aiohttp.ClientSession(connector=conn)
-
-
-loop.run_until_complete(dnsset_())
 
 
 async def ch_pr():
@@ -92,7 +76,7 @@ async def ch_pr():
         "random things go","i hate c++ WHAT İS cout <<string","bruh","c is better then c++ change my mind","idk lol" "sike","eeee",
         "batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout <<","(¬_¬)"," this bot wont get verified","Usb stick",
         "discord moment","powered by discord.py","discord.py included ","just invite the bot to setup","dont watch my status",
-            f"l","bored","i am bored but idk "]
+        "l","bored","i am bored but idk "]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(
             status=discord.Status.do_not_disturb, activity=statusss
@@ -184,34 +168,6 @@ made by takipsizad#1919"""
     )
 
 
-@bot.event
-async def on_guild_join(guild):
-    await bot.wait_until_ready()
-    channel = bot.get_channel(805355006551130122)
-    await channel.send(f"i joined {guild}")
-
-
-@bot.event
-async def on_ready():
-    await bot.wait_until_ready()
-    channel = bot.get_channel(805355006551130122)
-    await channel.send("ready")
-
-
-@bot.event
-async def on_connect():
-    await bot.wait_until_ready()
-    channel = bot.get_channel(805355006551130122)
-    await channel.send("connecting")
-
-
-@bot.event
-async def on_guild_remove(guild):
-    await bot.wait_until_ready()
-    channel = bot.get_channel(805355006551130122)
-    await channel.send(f"i leaved {guild}")
-
-
 @bot.command()
 async def getwidget(ctx):
     await ctx.reply(await bot.fetch_widget(ctx.guild.id))
@@ -225,6 +181,7 @@ async def create_invite(ctx):
 
 @bot.command(aliases=["delete-invite", "delete_invite"])
 @has_permissions(manage_guild=True)
+
 async def deleteinvite(ctx, arg1):
     try:
         await bot.delete_invite(arg1)
@@ -304,60 +261,6 @@ async def ytinfo(ctx, arg1):
     except:
         await ctx.reply("error  make sure to enter valid link")
 
-
-@bot.command()
-async def facepalm(ctx):
-    await ctx.reply(embed=await reddit.reddit("facepalm"))
-
-
-@bot.command()
-async def madlads(ctx):
-    await ctx.reply(embed=await reddit.reddit("madlads"))
-
-
-@bot.command()
-async def softwaregore(ctx):
-    await ctx.reply(embed=await reddit.reddit("softwaregore"))
-
-
-@bot.command(name="reddit")
-async def reddt(ctx, arg1):
-    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
-    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
-    if user_voted == True or is_premium_user is not None:
-        await ctx.reply(embed=await reddit.reddit(arg1))
-    else:
-        await ctx.reply(
-            "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
-        )
-
-
-@bot.command(aliases=["meme"])
-async def memes(ctx):
-    memesubreddit = [
-        "dankmemes",
-        "memes",
-        "HistoryMemes",
-        "PrequelMemes",
-        "wholesomememes",
-        "ProgrammerHumor",
-        "codingmemes",
-        "SkidsBeingSkids",
-        "IT_Memes",
-        "programmerjoke",
-        "masterhacker",
-    ]
-    await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
-
-
-@bot.command(name="all")
-async def lal(ctx):
-    await ctx.reply(embed=await reddit.reddit("random"))
-
-
-@bot.command()
-async def programmerhumor(ctx):
-    await ctx.reply(embed=await reddit.reddit("programmerhumor"))
 
 
 @bot.command()
