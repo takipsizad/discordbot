@@ -29,7 +29,6 @@ import psutil
 from functools import lru_cache
 import timeit
 import utils.http
-
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -41,10 +40,8 @@ db = os.getenv("db")
 
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=intents)
-dble = topgg.DBLClient(bot=bot, token=dbltoken, autopost=True)
 client = motor.motor_tornado.MotorClient(db)
 slash = SlashCommand(bot, sync_commands=True)
-
 
 mydb = client["db"]
 prmc = mydb.premiumcode
@@ -53,8 +50,6 @@ premium = mydb.premium
 bot.remove_command("help")
 # bot.load_extension("safeeval")
 bot.load_extension("jishaku")
-
-loop = asyncio.get_event_loop()
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
@@ -555,7 +550,7 @@ def index():
     return "<h1>Bot is running</h1>"
 
 
-Thread(target=app.run, args=("0.0.0.0", 8080)).start()
+#Thread(target=app.run, args=("0.0.0.0", 8080)).start()
 bot.loop.create_task(ch_pr())
 bot.run(token)
-Thread(target=bot.run, args=(token)).start()
+#Thread(target=bot.run, args=(token)).start()

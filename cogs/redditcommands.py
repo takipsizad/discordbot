@@ -1,26 +1,26 @@
 import discord
 import os
-
+import topgg
 from datetime import datetime
 from discord.ext import commands
-import utils.reddit
-
+from utils import reddit
+dbltoken = os.getenv("dbltoken")
 
 class Redditcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.dbl = topgg.DBLClient(bot=self.bot, token=dbltoken, autopost=True)
+        self.dbl = topgg.DBLClient(bot=self.bot, token=dbltoken)
 
     @commands.command()
-    async def facepalm(ctx):
+    async def facepalm(self,ctx):
         await ctx.reply(embed=await reddit.reddit("facepalm"))
 
     @commands.command()
-    async def madlads(ctx):
+    async def madlads(self,ctx):
         await ctx.reply(embed=await reddit.reddit("madlads"))
     
     @commands.command()
-    async def softwaregore(ctx):
+    async def softwaregore(self,ctx):
         await ctx.reply(embed=await reddit.reddit("softwaregore"))
     
     @commands.command(name="reddit")
@@ -35,7 +35,7 @@ class Redditcommands(commands.Cog):
             )
 
     @commands.command(aliases=["meme"])
-    async def memes(ctx):
+    async def memes(self,ctx):
         memesubreddit = [
             "dankmemes",
             "memes",
