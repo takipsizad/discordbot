@@ -29,10 +29,11 @@ import psutil
 from functools import lru_cache
 import timeit
 import utils.http
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-intents = discord.Intents.all()
+intents = discord.Intents.default()
 
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")

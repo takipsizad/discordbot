@@ -1,8 +1,6 @@
 import aiohttp
 from aiohttp.resolver import AsyncResolver
-
-
-def sessions():
+async def sessions():
     resolver = AsyncResolver(
         nameservers=[
             "80.80.80.80",

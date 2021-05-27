@@ -5,7 +5,6 @@ from datetime import datetime
 from discord.ext import commands
 from utils import reddit
 dbltoken = os.getenv("dbltoken")
-
 class Redditcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

@@ -3,8 +3,7 @@ import json
 import discord
 import random
 import asyncio
-session = sessions()
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # python being a bitch and also pylint
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())   # python being a bitch and also pylint
 async def reddit(subreddit):
     async with session.get(
         f"https://www.reddit.com/r/{subreddit}/new/.json?count=25",
