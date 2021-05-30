@@ -18,6 +18,7 @@ class Events(commands.Cog):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(805355006551130122)
         await channel.send("ready")
+        print("Bot is ready")
 
     @commands.Cog.listener()
     async def on_connect(self):

@@ -29,11 +29,15 @@ import psutil
 from functools import lru_cache
 import timeit
 import utils.http
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+loop = asyncio.get_event_loop()
+from utils.http import sessions
+import asyncio
+loop = asyncio.get_event_loop()
+session = loop.run_until_complete(sessions()) # temp fix dont mind me 
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")
@@ -56,6 +60,7 @@ for file in os.listdir("cogs"):
     if file.endswith(".py"):
         name = file[:-3]
         bot.load_extension(f"cogs.{name}")
+        print(f"loaded: cogs.{name}")
 
 
 
@@ -85,59 +90,7 @@ async def ping(ctx):
     await ctx.reply(f"Pong! In {round(bot.latency * 1000)}ms")
 
 
-@bot.command()
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def ipcheck(ctx, arg1):
-    async with session.get(
-        f"https://api.iplegit.com/info?ip={str(arg1)}",
-        headers={"User-agent": "Mozilla/5.0"},
-    ) as res:
-        parsed_json = await res.json()
-        parsed_json2 = parsed_json["bad"]
-        parsed_json3 = parsed_json["type"]
-        parsed_json4 = parsed_json["ip"]
-        await ctx.reply(
-            f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}"
-        )
 
-
-@bot.event
-async def on_ready():
-    print("Bot is ready")
-
-
-@lru_cache(maxsize=None)
-@bot.command()
-async def langdetect(ctx, arg1):
-    async with session.get(
-        (f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),
-        headers={"User-agent": "Mozilla/5.0"},
-    ) as res:
-        jsonr = json.dumps(await res.json())
-        parsed_json = json.loads(jsonr)
-        parsed_json2 = parsed_json["lang"]
-        await ctx.reply(f"language: {parsed_json2}")
-
-
-@lru_cache(maxsize=None)
-@bot.command()
-async def serverversion(ctx):
-    async with session.get(
-        ("https://termsite.takipsizad.tk/api/serverversion"),
-        headers={"User-agent": "Mozilla/5.0"},
-    ) as res:
-        parsed_json = await res.json()
-        parsed_json2 = parsed_json["serverversion"]
-        await ctx.reply(f"server version {parsed_json2}")
-
-
-@bot.command()
-async def execute(ctx, *, args):
-    if ctx.author.id == 542380989775740929:
-        output = eval(args)
-        await ctx.reply(output)
-    else:
-        raise commands.NotOwner("")
 
 
 @bot.command()
@@ -162,11 +115,6 @@ python info {platform.python_implementation()} {platform.python_version()}
 on {len(bot.guilds)} guilds
 made by takipsizad#1919"""
     )
-
-
-@bot.command()
-async def getwidget(ctx):
-    await ctx.reply(await bot.fetch_widget(ctx.guild.id))
 
 
 @bot.command(aliases=["create-invite", "createinvite"])
@@ -257,29 +205,6 @@ async def ytinfo(ctx, arg1):
     except:
         await ctx.reply("error  make sure to enter valid link")
 
-
-
-@bot.command()
-async def donate(ctx):
-    embed = discord.Embed(title="Donate", color=0x209F69)
-    embed.add_field(
-        name="donate ethereum", value="0xf667485f542185d2c27B897E660a589a37b21FCc"
-    )
-    embed.add_field(
-        name="donate bitcoin", value="bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv"
-    )
-    embed.add_field(
-        name="donate bitcoin (backup)",
-        value="bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2",
-    )
-    embed.add_field(
-        name="donate dogecoin",
-        value="DBBqyi3BuonKbTNJtnQzBfTB92WgK1iZZw",
-    )
-    embed.set_footer(text="thanks for using my bot ❤️  ")
-    await ctx.reply(embed=embed)
-
-
 @bot.group()
 async def eth(ctx):
     if ctx.invoked_subcommand is None:
@@ -349,7 +274,7 @@ async def createaccount(ctx):
                 parsed_json3, parsed_json4
             )
         )
-        await ctx.reply(" i send it from dms")
+        await ctx.reply("i send it from dms")
 
 
 @eth.command()

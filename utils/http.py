@@ -1,5 +1,6 @@
 import aiohttp
 from aiohttp.resolver import AsyncResolver
+
 async def sessions():
     resolver = AsyncResolver(
         nameservers=[
@@ -12,5 +13,5 @@ async def sessions():
         ]
     )
     conn = aiohttp.TCPConnector(resolver=resolver)
-    session = aiohttp.ClientSession(connector=conn)
+    session = aiohttp.ClientSession() # connector=conn
     return session
