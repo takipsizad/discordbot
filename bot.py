@@ -77,7 +77,7 @@ async def ch_pr():
         "random things go","i hate c++ WHAT İS cout <<string","bruh","c is better then c++ change my mind","idk lol" "sike","eeee",
         "batteries included","no setup needed","gas gas gas","random things go ","smh","prinf() > cout <<","(¬_¬)"," this bot wont get verified","Usb stick",
         "discord moment","powered by discord.py","discord.py included ","just invite the bot to setup","dont watch my status",
-        "l","bored","i am bored but idk "]
+        "l","bored","i am bored but idk","🏳️‍⚧️ transgender rights are human rights","no homophobia permitted"]
         statusss = discord.Game(random.choice(statuss))
         await bot.change_presence(
             status=discord.Status.do_not_disturb, activity=statusss
@@ -285,45 +285,6 @@ async def prices(ctx):
     await ctx.reply(f"ethereum price: {e} in usd")
 
 
-@bot.listen("on_command_error")
-async def on_command_error(ctx, error):
-    # Unwrapping the error cause because of how discord.py raises some of them
-    error = error.__cause__ or error
-    errors = []
-    errors.append(error)
-    print(error)
-    if isinstance(error, commands.CommandOnCooldown):
-        await ctx.reply(
-            f"That command is on cooldown for `{error.retry_after:,.0f}` more seconds!"
-        )
-    if isinstance(error, commands.errors.MissingRequiredArgument):
-        await ctx.reply("make sure to enter a required argument")
-
-    if isinstance(error, commands.errors.CommandInvokeError):
-        await ctx.reply("some error happened give me enough permissions for that ")
-    if isinstance(error, commands.NotOwner):
-        await ctx.reply("you are not my owner ")
-
-
-@bot.listen("on_slash_command_error")
-async def on_slash_command_error(ctx, error):
-    # Unwrapping the error cause because of how discord.py raises some of them
-    error = error.__cause__ or error
-    errors = []
-    errors.append(error)
-    print(error)
-    if isinstance(error, commands.CommandOnCooldown):
-        await ctx.reply(
-            f"That command is on cooldown for `{error.retry_after:,.0f}` more seconds!"
-        )
-    if isinstance(error, commands.errors.MissingRequiredArgument):
-        await ctx.reply("make sure to enter a required argument")
-
-    if isinstance(error, commands.errors.CommandInvokeError):
-        await ctx.reply("some error happened give me enough permissions for that ")
-    if isinstance(error, commands.NotOwner):
-        await ctx.reply("you are not my owner ")
-
 
 @bot.command()
 async def cryptoprices(ctx, arg1, arg2):
@@ -368,6 +329,45 @@ async def on_commsand(ctx):
     embed.add_field(name="Guild", value=f"``{ctx.guild}``")
     embed.add_field(name="Guild ID", value=f"``{ctx.guild.id}``")
     await channel.send(embed=embed)
+
+@bot.listen("on_command_error")
+async def on_command_error(ctx, error):
+    # Unwrapping the error cause because of how discord.py raises some of them
+    error = error.__cause__ or error
+    errors = []
+    errors.append(error)
+    print(error)
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.reply(
+            f"That command is on cooldown for `{error.retry_after:,.0f}` more seconds!"
+        )
+    if isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.reply("make sure to enter a required argument")
+
+    if isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.reply("some error happened give me enough permissions for that ")
+    if isinstance(error, commands.NotOwner):
+        await ctx.reply("you are not my owner ")
+
+
+@bot.listen("on_slash_command_error")
+async def on_slash_command_error(ctx, error):
+    # Unwrapping the error cause because of how discord.py raises some of them
+    error = error.__cause__ or error
+    errors = []
+    errors.append(error)
+    print(error)
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.reply(
+            f"That command is on cooldown for `{error.retry_after:,.0f}` more seconds!"
+        )
+    if isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.reply("make sure to enter a required argument")
+
+    if isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.reply("some error happened give me enough permissions for that ")
+    if isinstance(error, commands.NotOwner):
+        await ctx.reply("you are not my owner ")
 
 
 @bot.command()

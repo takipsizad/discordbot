@@ -47,8 +47,12 @@ class Redditcommands(commands.Cog):
             "IT_Memes",
             "programmerjoke",
             "masterhacker",
-        ]
-        await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
+            "traaaaaaannnnnnnnnns",
+            "transprogrammer",
+            "egg_irl",
+            "me_irlgbt",
+            "me_irl", ]
+            await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
 
     @commands.command(name="all")
     async def lal(ctx):
