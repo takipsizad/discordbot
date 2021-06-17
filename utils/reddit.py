@@ -11,7 +11,7 @@ while not loop.is_running():
 #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())   # python being a bitch and also pylint
 async def reddit(subreddit):
     async with session.get(
-        f"https://www.reddit.com/r/{subreddit}/new/.json?count=25",
+        f"https://www.reddit.com/r/{subreddit}/new/.json?limit=100",
         headers={"User-agent": "Mozilla/5.0"},
     ) as ct:
         jsonr = json.dumps(await ct.json())
@@ -20,7 +20,7 @@ async def reddit(subreddit):
         parsed_json3 = parsed_json2["children"]
         embed = discord.Embed()
         try:
-            parsed_json4 = parsed_json3[random.randint(0, 25)]
+            parsed_json4 = parsed_json3[random.randint(0, 200)]
         except:
             parsed_json4 = parsed_json3[random.randint(0, 15)]
         parsed_json5 = parsed_json4["data"]
@@ -55,7 +55,7 @@ async def reddit(subreddit):
 
 async def randomreddit(subreddits):
     async with session.get(
-        f"https://www.reddit.com/r/{random.choice(subreddits)}/new/.json?count=25",
+        f"https://www.reddit.com/r/{random.choice(subreddits)}/new/.json?limit=100",
         headers={"User-agent": "Mozilla/5.0"},
     ) as ct:
         jsonr = json.dumps(await ct.json())

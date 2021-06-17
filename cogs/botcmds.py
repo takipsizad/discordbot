@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
-
-
+import platform
+from motor import version as mtr_version
+from aiohttp import __version__ as aiohttp_ver
 class Botcmds(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
@@ -25,6 +26,30 @@ class Botcmds(commands.Cog):
         )
         embed.set_footer(text="thanks for using my bot ❤️  ")
         await ctx.reply(embed=embed)
+
+    @commands.command()
+    async def ping(self, ctx):
+        await ctx.reply(f"Pong! In {round(self.bot.latency * 1000)}ms")
+
+    @commands.command()
+    async def echo(self, ctx, *, args):
+        if not "@" in args:
+            await ctx.send(args)
+        else:
+            await ctx.reply("dont send mentions")
+
+    @commands.command()
+    async def info(self, ctx):
+        await ctx.reply(
+            f"""
+    discord py version {discord.__version__}
+    aiohttp version  {aiohttp_ver}
+    discord slash version  {discord_slash.__version__}
+    motor (mongodb) version  {mtr_version}
+    os version {platform.platform(aliased=0, terse=0)}
+    python info {platform.python_implementation()} {platform.python_version()}
+    on {len(self.bot.guilds)} guilds
+    made by takipsizad#1919 / takipsizad#9999""")  # aaaaaaaaaaaaaaaaaaaaa
 
 
 def setup(bot):

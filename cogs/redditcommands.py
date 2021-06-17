@@ -4,6 +4,7 @@ import topgg
 from datetime import datetime
 from discord.ext import commands
 from utils import reddit
+
 dbltoken = os.getenv("dbltoken")
 class Redditcommands(commands.Cog):
     def __init__(self, bot):
@@ -48,11 +49,11 @@ class Redditcommands(commands.Cog):
             "programmerjoke",
             "masterhacker",
             "traaaaaaannnnnnnnnns",
-            "transprogrammer",
             "egg_irl",
             "me_irlgbt",
+            "meme",
             "me_irl", ]
-            await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
+        await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
 
     @commands.command(name="all")
     async def lal(ctx):

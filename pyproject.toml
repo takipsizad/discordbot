@@ -6,7 +6,7 @@ authors = ["takipsizad <addeniz25@gmail.com>"]
 license = "GNU General Public License v3.0"
 
 [tool.poetry.dependencies]
-python = "3.7^"
+python = "^3.7"
 "discord.py" = "^1.6.0"
 dblpy = "^0.4.0"
 motor = "^2.3.1"

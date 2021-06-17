@@ -44,10 +44,30 @@ class Utils(commands.Cog):
             parsed_json = await res.json()
             parsed_json2 = parsed_json["serverversion"]
             await ctx.reply(f"server version {parsed_json2}")
+        
 
     @commands.command()
     async def getwidget(self, ctx):
         await ctx.reply(await self.bot.fetch_widget(ctx.guild.id))
+    
+    @commands.command()
+    async def robloxad(ctx):
+        urls = [
+            "https://www.roblox.com/user-sponsorship/1",
+            "https://www.roblox.com/user-sponsorship/2",
+            "https://www.roblox.com/user-sponsorship/3",
+        ]
+        url = random.choice(urls)
+        async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
+            robloxadss = await robloxadsss.read()
+            soup = BeautifulSoup(robloxadss, features="html.parser")
+            embed = discord.Embed()
+            embed.set_image(url=soup.find("img")["src"])
+            embed.add_field(
+                name=f'{soup.find("a")["title"]}',
+                value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})',
+            )
+            await ctx.reply(embed=embed)
 
 
 def setup(bot):
