@@ -1,9 +1,10 @@
 import discord
 from discord.ext import commands
-from utils.http import sessions
+from utils.fetch import fetch
 import asyncio
+import random
+from discord.ext.commands import has_permissions
 loop = asyncio.get_event_loop()
-session = loop.run_until_complete(sessions())
 
 
 class Utils(commands.Cog):
@@ -13,7 +14,7 @@ class Utils(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ipcheck(self,ctx, arg1):
-        async with session.get(
+        async with fetch(
             f"https://api.iplegit.com/info?ip={str(arg1)}",
             headers={"User-agent": "Mozilla/5.0"},
         ) as res:
@@ -27,7 +28,7 @@ class Utils(commands.Cog):
 
     @commands.command()
     async def langdetect(self,ctx, arg1):
-        async with session.get(
+        async with fetch(
             (f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),
             headers={"User-agent": "Mozilla/5.0"},
         ) as res:
@@ -37,7 +38,7 @@ class Utils(commands.Cog):
 
     @commands.command()
     async def serverversion(self,ctx):
-        async with session.get(
+        async with fetch(
             ("https://termsite.takipsizad.tk/api/serverversion"),
             headers={"User-agent": "Mozilla/5.0"},
         ) as res:
@@ -49,16 +50,16 @@ class Utils(commands.Cog):
     @commands.command()
     async def getwidget(self, ctx):
         await ctx.reply(await self.bot.fetch_widget(ctx.guild.id))
-    
+
     @commands.command()
-    async def robloxad(ctx):
+    async def robloxad(self,ctx):
         urls = [
             "https://www.roblox.com/user-sponsorship/1",
             "https://www.roblox.com/user-sponsorship/2",
             "https://www.roblox.com/user-sponsorship/3",
         ]
-        url = random.choice(urls)
-        async with session.get(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
+        url = random.choice(urls) 
+        async with fetch(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
             robloxadss = await robloxadsss.read()
             soup = BeautifulSoup(robloxadss, features="html.parser")
             embed = discord.Embed()
@@ -68,6 +69,39 @@ class Utils(commands.Cog):
                 value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})',
             )
             await ctx.reply(embed=embed)
+
+    @commands.command()
+    async def catfact(self, ctx):
+        async with fetch(
+            "https://cat-fact.herokuapp.com/facts/random",
+            headers={"User-agent": "Mozilla/5.0"},
+        ) as res:
+            parsed_json = await res.json()
+            parsed_json2 = parsed_json["text"]
+            await ctx.reply(f"random cat fact {parsed_json2}")
+
+    @commands.command(aliases=["create-invite", "createinvite"])
+    async def create_invite(self, ctx):
+        link = await ctx.channel.create_invite()
+        await ctx.reply(f"Here is an instant invite to your server: {str(link)}")
+
+
+    @commands.command(aliases=["delete-invite", "delete_invite"])
+    @has_permissions(manage_guild=True)
+    async def deleteinvite(self, ctx, arg1):
+        try:
+            await bot.delete_invite(arg1)
+            await ctx.reply("invite deleted")
+        except:
+            await ctx.reply("error deleting invite")
+
+    @commands.command()
+    async def http(ctx, arg1):
+        imageURL = f"https://http.cat/{arg1}"
+        embed = discord.Embed()
+        embed.set_image(url=imageURL)
+        await ctx.reply(embed=embed)
+
 
 
 def setup(bot):

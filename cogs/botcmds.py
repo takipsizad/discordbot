@@ -3,12 +3,13 @@ from discord.ext import commands
 import platform
 from motor import version as mtr_version
 from aiohttp import __version__ as aiohttp_ver
+
 class Botcmds(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
 
     @commands.command()
-    async def donate(self,ctx):
+    async def donate(self, ctx):
         embed = discord.Embed(title="Donate", color=0x209F69)
         embed.add_field(
             name="donate ethereum", value="0xf667485f542185d2c27B897E660a589a37b21FCc"
@@ -51,6 +52,25 @@ class Botcmds(commands.Cog):
     on {len(self.bot.guilds)} guilds
     made by takipsizad#1919 / takipsizad#9999""")  # aaaaaaaaaaaaaaaaaaaaa
 
+    @commands.command()
+    async def vote(self, ctx):
+        embed = discord.Embed()
+        embed.title = "Vote link"
+        embed.add_field(
+            name="vote link:",
+            value="[vote](https://top.gg/bot/555036314077233172/vote?refferer=takipsizadbot)",
+        )
+        await ctx.reply(embed=embed)
+
+    @commands.command()
+    async def invite(ctx):
+        embed = discord.Embed()
+        embed.title = "Invite link"
+        embed.add_field(
+            name="Invite this bot for the bot",
+            value="[invite](https://takipsizadbot.page.link/invite)",
+        )
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(Botcmds(bot))

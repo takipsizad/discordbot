@@ -1,4 +1,4 @@
-from .http import sessions
+from .fetch import fetch
 import json
 import discord
 import random
@@ -10,7 +10,7 @@ while not loop.is_running():
 
 #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())   # python being a bitch and also pylint
 async def reddit(subreddit):
-    async with session.get(
+    async with fetch(
         f"https://www.reddit.com/r/{subreddit}/new/.json?limit=100",
         headers={"User-agent": "Mozilla/5.0"},
     ) as ct:
@@ -54,7 +54,7 @@ async def reddit(subreddit):
                 )
 
 async def randomreddit(subreddits):
-    async with session.get(
+    async with fetch(
         f"https://www.reddit.com/r/{random.choice(subreddits)}/new/.json?limit=100",
         headers={"User-agent": "Mozilla/5.0"},
     ) as ct:

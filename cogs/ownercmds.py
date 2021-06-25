@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import uuid
+import psutil
 
 
 class Owner_commands(commands.Cog):
@@ -9,7 +10,7 @@ class Owner_commands(commands.Cog):
 
     @commands.command()
     async def execute(self, ctx, *, args):
-        if ctx.author.id == 542380989775740929:
+        if ctx.author.id == 849518771268878426:
             args = str(args)
             print(args)
             output = eval(args)
@@ -18,18 +19,26 @@ class Owner_commands(commands.Cog):
             raise commands.NotOwner("")
 
     @commands.command()
-    async def generatecode(ctx):
-        if ctx.author.id == 542380989775740929:
+    async def generatecode(self,ctx):
+        if ctx.author.id == 849518771268878426:
             prmcodess = str(uuid.uuid4())
             prmdata = {prmcodess: "pff"}
             await prmc.insert_one(prmdata)
             await ctx.author.send(f"{prmcodess} generated code")
         else:
             raise commands.NotOwner("")
-    
+
     @commands.command()
-    async def devinfo(ctx):
-        if ctx.author.id == 542380989775740929:
+    async def devinfo(self,ctx):
+        if ctx.author.id == 849518771268878426:
+            mem = psutil.virtual_memory()
+            await ctx.reply(f"""{mem}""")
+        else:
+            raise commands.NotOwner("")
+
+    @commands.command()
+    async def devinfo(self,ctx):
+        if ctx.author.id == 849518771268878426:
             mem = psutil.virtual_memory()
             await ctx.reply(f"""{mem}""")
         else:
