@@ -14,8 +14,6 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
-from bs4 import BeautifulSoup
-from pytube import YouTube
 import aiohttp
 from pycoingecko import CoinGeckoAPI
 import jishaku
@@ -31,20 +29,16 @@ import asyncio
 cg = CoinGeckoAPI()
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-intents = discord.Intents.all()
+intents = discord.Intents.default()
 
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")
-db = os.getenv("db")
+
 
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=intents)
-client = motor.motor_tornado.MotorClient(db)
 slash = SlashCommand(bot, sync_commands=True)
 
-mydb = client["db"]
-prmc = mydb.premiumcode
-premium = mydb.premium
 
 bot.remove_command("help")
 # bot.load_extension("safeeval")
@@ -55,7 +49,6 @@ for file in os.listdir("cogs"):
         name = file[:-3]
         bot.load_extension(f"cogs.{name}")
         print(f"loaded: cogs.{name}")
-
 
 async def ch_pr():
     await bot.wait_until_ready()
@@ -78,33 +71,6 @@ async def ch_pr():
             status=discord.Status.do_not_disturb, activity=statusss, afk=True
         )
 
-
-
-
-@bot.command()
-async def ytinfo(ctx, arg1):
-    try:
-        yt = YouTube(arg1)
-        await ctx.reply(
-            f"""```link {arg1} \ntitle: {yt.title}
-        \nauthor: {yt.author} \ndescription:\n {yt.description} \nmetadata: 
-        {yt.metadata} \npublish date: {yt.publish_date} \nrating: {yt.rating} \nviews: {yt.views}```"""
-        )
-    except:
-        await ctx.reply("error  make sure to enter valid link")
-
-
-
-
-#@eth.command()
-#async def prices(ctx):
-#    prices = cg.get_price(ids="ethereum", vs_currencies="usd")
-#    p2 = prices["ethereum"]
-#    e = p2["usd"]
-#    await ctx.reply(f"ethereum price: {e} in usd")
-
-
-
 @bot.command()
 async def cryptoprices(ctx, arg1, arg2):
     prices = cg.get_price(ids=arg1, vs_currencies=arg2)
@@ -114,76 +80,11 @@ async def cryptoprices(ctx, arg1, arg2):
     embed.add_field(name=f"{arg1} prices", value=f"{arg1} price: {e} in {arg2}")
     await ctx.reply(f"{arg1} price: {e} in {arg2}")
 
-@slash.slash(name="info", description="Info command")
-async def _info(ctx):
-    await ctx.send(
-        f"""
-discord py version {discord.__version__}
-aiohttp version  {aiohttp.__version__}
-discord slash version  {discord_slash.__version__}
-motor (mongodb) version  {motor.version}
-os version {platform.platform(aliased=0, terse=0)}
-python info {platform.python_implementation()} {platform.python_version()}
-on {len(bot.guilds)} guilds 
-made by takipsizad#1919 / takipsizad#9999"""
-    )
-
-
-@slash.slash(name="reddit", description="Reddit command")
-async def _redd_t(ctx, subreddit: str):
-    user_voted = await dble.get_user_vote(user_id=ctx.author.id)
-    is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
-    if user_voted == True or is_premium_user is not None:
-        await ctx.send(embed=await reddit.reddit(subreddit))
-    else:
-        await ctx.send(
-            "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
-        ) # pain
-
-
-@slash.slash(name="donate", description="Donate command")
-async def __donate(ctx):
-    embed = discord.Embed(title="Donate", color=0x209F69)
-    embed.add_field(
-        name="donate ethereum", value="0xf667485f542185d2c27B897E660a589a37b21FCc"
-    )
-    embed.add_field(
-        name="donate bitcoin", value="bc1q4us2ueuayl4j36ju708xzez7vdpurpw33n8amv"
-    )
-    embed.add_field(
-        name="donate bitcoin (backup)",
-        value="bc1qfyzu4xcjg5tq4fmp3tfrqsnv82368w4xvwxvy2",
-    )
-    embed.set_footer(text="thanks for using my bot ❤️  ")
-    await ctx.send(embed=embed)
-
-
-@slash.slash(name="cryptoprices", description="cryptoprice command")
-async def __cryptoprices(ctx, cryptocurrency: str, currency: str):
-    prices = cg.get_price(ids=cryptocurrency, vs_currencies=currency)
-    p2 = prices[cryptocurrency]
-    e = p2[currency]
-    await ctx.send(f"{cryptocurrency} price: {e} in {currency}")
-
-
-@slash.slash(name="support", description="Support command")
-async def __support(ctx):
-    embed = discord.Embed()
-    embed.title = "Invite link"
-    embed.add_field(
-        name="Support server",
-        value="[support](https://discord.gg/4uW3mTxx5S)",
-    )
-    await ctx.send(embed=embed)
-
-
 app = Flask("")
-
 
 @app.route("/")
 def index():
     return "<h1>Bot is running</h1>"
-
 
 #Thread(target=app.run, args=("0.0.0.0", 8080)).start()
 bot.loop.create_task(ch_pr())

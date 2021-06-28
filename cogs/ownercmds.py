@@ -1,12 +1,19 @@
 import discord
 from discord.ext import commands
 import uuid
+import os
+import motor
 import psutil
 
 
 class Owner_commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        dburl = os.getenv("db")
+        self.client = motor.motor_tornado.MotorClient(dburl)
+        db = self.client["db"]
+        self.prmc = db.premiumcode
+        self.premium = db.premium
 
     @commands.command()
     async def execute(self, ctx, *, args):
@@ -23,7 +30,7 @@ class Owner_commands(commands.Cog):
         if ctx.author.id == 849518771268878426:
             prmcodess = str(uuid.uuid4())
             prmdata = {prmcodess: "pff"}
-            await prmc.insert_one(prmdata)
+            await self.prmc.insert_one(prmdata)
             await ctx.author.send(f"{prmcodess} generated code")
         else:
             raise commands.NotOwner("")

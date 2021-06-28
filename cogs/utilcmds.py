@@ -3,7 +3,9 @@ from discord.ext import commands
 from utils.fetch import fetch
 import asyncio
 import random
+from bs4 import BeautifulSoup
 from discord.ext.commands import has_permissions
+from pytube import YouTube
 loop = asyncio.get_event_loop()
 
 
@@ -59,26 +61,25 @@ class Utils(commands.Cog):
             "https://www.roblox.com/user-sponsorship/3",
         ]
         url = random.choice(urls) 
-        async with fetch(url, headers={"User-agent": "Mozilla/5.0"}) as robloxadsss:
-            robloxadss = await robloxadsss.read()
-            soup = BeautifulSoup(robloxadss, features="html.parser")
-            embed = discord.Embed()
-            embed.set_image(url=soup.find("img")["src"])
-            embed.add_field(
-                name=f'{soup.find("a")["title"]}',
-                value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})',
-            )
-            await ctx.reply(embed=embed)
+        robloxadsss = await fetch(url, headers={"User-agent": "Mozilla/5.0"})
+        robloxadss = await robloxadsss.read()
+        soup = BeautifulSoup(robloxadss, features="html.parser")
+        embed = discord.Embed()
+        embed.set_image(url=soup.find("img")["src"])
+        embed.add_field(
+            name=f'{soup.find("a")["title"]}',
+            value=f'[{soup.find("a")["title"]}]({soup.find("a")["href"]})',
+        )
+        await ctx.reply(embed=embed)
 
     @commands.command()
     async def catfact(self, ctx):
-        async with fetch(
+        res = await fetch(
             "https://cat-fact.herokuapp.com/facts/random",
-            headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["text"]
-            await ctx.reply(f"random cat fact {parsed_json2}")
+            headers={"User-agent": "Mozilla/5.0"})
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["text"]
+        await ctx.reply(f"random cat fact {parsed_json2}")
 
     @commands.command(aliases=["create-invite", "createinvite"])
     async def create_invite(self, ctx):
@@ -90,7 +91,7 @@ class Utils(commands.Cog):
     @has_permissions(manage_guild=True)
     async def deleteinvite(self, ctx, arg1):
         try:
-            await bot.delete_invite(arg1)
+            await self.bot.delete_invite(arg1)
             await ctx.reply("invite deleted")
         except:
             await ctx.reply("error deleting invite")
@@ -102,6 +103,17 @@ class Utils(commands.Cog):
         embed.set_image(url=imageURL)
         await ctx.reply(embed=embed)
 
+    @commands.command() # pytube wont working
+    async def ytinfo(ctx, arg1: str):
+        try:
+            yt = YouTube(f"{arg1}")
+            await ctx.reply(
+                f"""```link {arg1} \ntitle: {yt.title}
+            \nauthor: {yt.author} \ndescription:\n {yt.description} \nmetadata: 
+            {yt.metadata} \npublish date: {yt.publish_date} \nrating: {yt.rating} \nviews: {yt.views}```"""
+            )
+        except:
+            await ctx.reply("error  make sure to enter valid link")
 
 
 def setup(bot):

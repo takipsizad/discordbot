@@ -3,6 +3,7 @@ from discord.ext import commands
 import platform
 from motor import version as mtr_version
 from aiohttp import __version__ as aiohttp_ver
+import discord_slash
 
 class Botcmds(commands.Cog):
     def __init__(self, bot):
@@ -58,7 +59,7 @@ class Botcmds(commands.Cog):
         embed.title = "Vote link"
         embed.add_field(
             name="vote link:",
-            value="[vote](https://top.gg/bot/555036314077233172/vote?refferer=takipsizadbot)",
+            value="[vote](https://top.gg/bot/555036314077233172/vote?refferer=takipsizadbot)", # note to me never ever hard code something
         )
         await ctx.reply(embed=embed)
 

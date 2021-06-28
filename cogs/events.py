@@ -86,8 +86,8 @@ class Events(commands.Cog):
         await channel.send(embed=embed)
 
     @commands.Cog.listener("on_slash_command")
-    async def on_commsand(ctx):
-        channel = bot.get_channel(805355006551130122)
+    async def on_command(self, ctx):
+        channel = self.bot.get_channel(805355006551130122)
         embed = discord.Embed()
         embed.set_author(name="Slash Command invoked")
         embed.add_field(name="Command", value=f"``{ctx.command}``")
