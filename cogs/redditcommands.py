@@ -49,7 +49,7 @@ class Redditcommands(commands.Cog):
             subredditdb = self.subredditdb
             memesubreddits = await subredditdb.find_one({"userId": f"{ctx.author.id}"})
             if not memesubreddits:
-                await ctx.reply("make sure to add meme subreddits")
+                await ctx.reply("make sure to add meme subreddits with ta!!memes add")
             else:
                 memesubreddit = memesubreddits["subreddits"].split(",")
                 await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
@@ -70,6 +70,13 @@ class Redditcommands(commands.Cog):
         await ctx.reply(
             "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
         )
+    @memes.command(name="list")
+    async def lists(self, ctx):
+        datatofind = {"userId": f"{ctx.author.id}"}
+        subredditdb = self.subredditdb
+        userdata = await subredditdb.find_one(datatofind)
+        await ctx.reply(f"chosen subreddits:{userdata['subreddits']}")
+
     @commands.command(name="all")
     async def lal(ctx):
         await ctx.reply(embed=await reddit.reddit("random"))

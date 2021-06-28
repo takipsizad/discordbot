@@ -6,6 +6,8 @@ import random
 from bs4 import BeautifulSoup
 from discord.ext.commands import has_permissions
 from pytube import YouTube
+from pycoingecko import CoinGeckoAPI
+cg = CoinGeckoAPI()
 loop = asyncio.get_event_loop()
 
 
@@ -114,6 +116,16 @@ class Utils(commands.Cog):
             )
         except:
             await ctx.reply("error  make sure to enter valid link")
+    
+    @commands.command()
+    async def cryptoprices(ctx, arg1, arg2):
+        prices = cg.get_price(ids=arg1, vs_currencies=arg2)
+        p2 = prices[arg1]
+        e = p2[arg2]
+        embed = discord.Embed()
+        embed.add_field(name=f"{arg1} prices", value=f"{arg1} price: {e} in {arg2}")
+        await ctx.reply(f"{arg1} price: {e} in {arg2}")
+
 
 
 def setup(bot):

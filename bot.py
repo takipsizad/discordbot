@@ -1,5 +1,4 @@
 # importing built in modules
-import string
 from os.path import join, dirname
 import os
 import json
@@ -7,38 +6,25 @@ import asyncio
 import random
 from threading import Thread
 import platform
-import uuid 
 
 # import third party modules
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
-import aiohttp
-from pycoingecko import CoinGeckoAPI
 import jishaku
-import topgg
-import motor
 from discord_slash import SlashCommand
 import discord_slash
-from aiohttp.resolver import AsyncResolver
 from flask import Flask
-import psutil
+
 loop = asyncio.get_event_loop()
-import asyncio
-cg = CoinGeckoAPI()
-dotenv_path = join(dirname(__file__), ".env")
-load_dotenv(dotenv_path)
+load_dotenv(join(dirname(__file__), ".env"))
 intents = discord.Intents.default()
 
 token = os.getenv("token")
 dbltoken = os.getenv("dbltoken")
 
-
-
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("ta!!"), intents=intents)
 slash = SlashCommand(bot, sync_commands=True)
-
 
 bot.remove_command("help")
 # bot.load_extension("safeeval")
@@ -70,15 +56,6 @@ async def ch_pr():
         await bot.change_presence(
             status=discord.Status.do_not_disturb, activity=statusss, afk=True
         )
-
-@bot.command()
-async def cryptoprices(ctx, arg1, arg2):
-    prices = cg.get_price(ids=arg1, vs_currencies=arg2)
-    p2 = prices[arg1]
-    e = p2[arg2]
-    embed = discord.Embed()
-    embed.add_field(name=f"{arg1} prices", value=f"{arg1} price: {e} in {arg2}")
-    await ctx.reply(f"{arg1} price: {e} in {arg2}")
 
 app = Flask("")
 
