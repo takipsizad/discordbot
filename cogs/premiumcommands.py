@@ -21,8 +21,8 @@ class Premiumdetect(commands.Cog):
             await self.premium.insert_one({str(ctx.author.id): "true"})
         else:
             await ctx.reply("Invalid code")
-    
-    
+
+
 
 
 def setup(bot):

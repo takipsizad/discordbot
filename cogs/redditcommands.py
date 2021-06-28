@@ -6,6 +6,8 @@ from discord.ext import commands
 from utils import reddit
 import asyncio
 import motor
+import discord_slash.cog_ext
+from discord_slash import cog_ext
 loop = asyncio.get_event_loop()
 
 dbltoken = os.getenv("dbltoken")
@@ -33,11 +35,11 @@ class Redditcommands(commands.Cog):
         await ctx.reply(embed=await reddit.reddit("softwaregore"))
     
     @commands.group(name="reddit")
-    async def reddt(self, ctx, arg1):
+    async def reddt(self, ctx, subreddit):
         user_voted = await self.dbl.get_user_vote(user_id=ctx.author.id)
         is_premium_user = await self.premium.find_one({str(ctx.author.id): "true"})
         if user_voted == True or is_premium_user is not None:
-            await ctx.reply(embed=await reddit.reddit(arg1))
+            await ctx.reply(embed=await reddit.reddit(subreddit))
         else:
             await ctx.reply(
                 "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
@@ -84,6 +86,17 @@ class Redditcommands(commands.Cog):
     @commands.command()
     async def programmerhumor(ctx):
         await ctx.reply(embed=await reddit.reddit("programmerhumor"))
+    
+    @cog_ext.cog_slash(name="reddit", description="Reddit command")
+    async def _redd_t(self, ctx, subreddit: str):
+        user_voted = await self.dbl.get_user_vote(user_id=ctx.author.id)
+        is_premium_user = await self.premium.find_one({str(ctx.author.id): "true"})
+        if user_voted == True or is_premium_user is not None:
+            await ctx.send(embed=await reddit.reddit(subreddit)) 
+        else:
+            await ctx.send(
+                "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
+            )  # pain
 
 def setup(bot):
     bot.add_cog(Redditcommands(bot))

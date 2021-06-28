@@ -6,6 +6,8 @@ from motor import version as mtr_version
 from aiohttp import __version__ as aiohttp_ver
 import discord_slash
 import platform
+from pycoingecko import CoinGeckoAPI
+cg = CoinGeckoAPI()
 
 class Slash(commands.Cog):
     def __init__(self, bot):
@@ -25,16 +27,7 @@ on {len(self.bot.guilds)} guilds
 made by takipsizad#1919 / takipsizad#9999""")  #
 
 
-    @cog_ext.cog_slash(name="reddit", description="Reddit command")
-    async def _redd_t(self, ctx, subreddit: str):
-        user_voted = await dble.get_user_vote(user_id=ctx.author.id)
-        is_premium_user = await premium.find_one({str(ctx.author.id): "true"})
-        if user_voted == True or is_premium_user is not None:
-            await ctx.send(embed=await reddit.reddit(subreddit))
-        else:
-            await ctx.send(
-                "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
-            )  # pain
+
 
 
     @cog_ext.cog_slash(name="donate", description="Donate command")
