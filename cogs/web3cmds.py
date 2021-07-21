@@ -3,6 +3,8 @@ from discord.ext import commands
 from utils.fetch import fetch
 import asyncio
 import json
+from pycoingecko import CoinGeckoAPI
+cg = CoinGeckoAPI()
 loop = asyncio.get_event_loop()
 
 class Web3commands(commands.Cog):
@@ -80,7 +82,7 @@ class Web3commands(commands.Cog):
         await ctx.reply("i send it from dms")
     
     @eth.command()
-    async def prices(ctx):
+    async def prices(self, ctx):
         prices = cg.get_price(ids="ethereum", vs_currencies="usd")
         p2 = prices["ethereum"]
         e = p2["usd"]

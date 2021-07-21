@@ -28,7 +28,8 @@ class help(commands.Cog):
         ta!!info
         ta!!vote
         ta!!invite
-        ta!!donate""",
+        ta!!donate 
+        https://gist.github.com/takipsizad/52db97dfa570c34016d0f03c8c02503b""",
         )
 
         page2 = Page(title="commands:", description="Second page")

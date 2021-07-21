@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from discord.ext.commands import has_permissions
 from pytube import YouTube
 from pycoingecko import CoinGeckoAPI
+from utils.proxy import randomproxy
 cg = CoinGeckoAPI()
 loop = asyncio.get_event_loop()
 
@@ -18,38 +19,37 @@ class Utils(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ipcheck(self,ctx, arg1):
-        async with fetch(
+        res = await  fetch(
             f"https://api.iplegit.com/info?ip={str(arg1)}",
             headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["bad"]
-            parsed_json3 = parsed_json["type"]
-            parsed_json4 = parsed_json["ip"]
-            await ctx.reply(
-                f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}"
-            )
+        )
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["bad"]
+        parsed_json3 = parsed_json["type"]
+        parsed_json4 = parsed_json["ip"]
+        await ctx.reply(
+            f"bad: { str(parsed_json2)} type: {str(parsed_json3)} ip: {str(parsed_json4)}"
+        )
 
     @commands.command()
     async def langdetect(self,ctx, arg1):
-        async with fetch(
+        res = await fetch(
             (f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),
             headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["lang"]
-            await ctx.reply(f"language: {parsed_json2}")
+        )
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["lang"]
+        await ctx.reply(f"language: {parsed_json2}")
 
     @commands.command()
     async def serverversion(self,ctx):
-        async with fetch(
+        res = await fetch(
             ("https://termsite.takipsizad.tk/api/serverversion"),
             headers={"User-agent": "Mozilla/5.0"},
-        ) as res:
-            parsed_json = await res.json()
-            parsed_json2 = parsed_json["serverversion"]
-            await ctx.reply(f"server version {parsed_json2}")
-        
+        )
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json["serverversion"]
+        await ctx.reply(f"server version {parsed_json2}")
 
     @commands.command()
     async def getwidget(self, ctx):
@@ -99,14 +99,14 @@ class Utils(commands.Cog):
             await ctx.reply("error deleting invite")
 
     @commands.command()
-    async def http(ctx, arg1):
+    async def http(self , ctx, arg1):
         imageURL = f"https://http.cat/{arg1}"
         embed = discord.Embed()
         embed.set_image(url=imageURL)
         await ctx.reply(embed=embed)
 
     @commands.command() # pytube wont working
-    async def ytinfo(ctx, arg1: str):
+    async def ytinfo(self , ctx, arg1: str):
         try:
             yt = YouTube(f"{arg1}")
             await ctx.reply(
@@ -118,13 +118,17 @@ class Utils(commands.Cog):
             await ctx.reply("error  make sure to enter valid link")
     
     @commands.command()
-    async def cryptoprices(ctx, arg1, arg2):
+    async def cryptoprices(self, ctx, arg1, arg2):
         prices = cg.get_price(ids=arg1, vs_currencies=arg2)
         p2 = prices[arg1]
         e = p2[arg2]
         embed = discord.Embed()
         embed.add_field(name=f"{arg1} prices", value=f"{arg1} price: {e} in {arg2}")
         await ctx.reply(f"{arg1} price: {e} in {arg2}")
+    
+    @commands.command()
+    async def randomproxy(self, ctx):
+        await ctx.reply(await randomproxy())
 
 
 

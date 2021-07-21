@@ -25,7 +25,6 @@ class Events(commands.Cog):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(805355006551130122)
         await channel.send("connecting")
-
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         await self.bot.wait_until_ready()
@@ -86,7 +85,7 @@ class Events(commands.Cog):
         await channel.send(embed=embed)
 
     @commands.Cog.listener("on_slash_command")
-    async def on_command(self, ctx):
+    async def on_slash_command(self, ctx):
         channel = self.bot.get_channel(805355006551130122)
         embed = discord.Embed()
         embed.set_author(name="Slash Command invoked")

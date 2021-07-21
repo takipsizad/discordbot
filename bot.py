@@ -16,7 +16,7 @@ from discord_slash import SlashCommand
 import discord_slash
 from flask import Flask
 
-loop = asyncio.get_event_loop()
+loop = asyncio.get_event_loop() 
 load_dotenv(join(dirname(__file__), ".env"))
 intents = discord.Intents.default()
 
@@ -38,6 +38,9 @@ for file in os.listdir("cogs"):
 
 async def ch_pr():
     await bot.wait_until_ready()
+    await bot.change_presence(
+        status=discord.Status.do_not_disturb, afk=True
+    )
     await asyncio.sleep(30)
     while True:
         await asyncio.sleep(30) # waits for init

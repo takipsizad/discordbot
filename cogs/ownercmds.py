@@ -43,14 +43,5 @@ class Owner_commands(commands.Cog):
         else:
             raise commands.NotOwner("")
 
-    @commands.command()
-    async def devinfo(self,ctx):
-        if ctx.author.id == 849518771268878426:
-            mem = psutil.virtual_memory()
-            await ctx.reply(f"""{mem}""")
-        else:
-            raise commands.NotOwner("")
-
-
 def setup(bot):
     bot.add_cog(Owner_commands(bot))

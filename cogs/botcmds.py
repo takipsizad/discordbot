@@ -44,14 +44,14 @@ class Botcmds(commands.Cog):
     async def info(self, ctx):
         await ctx.reply(
             f"""
-    discord py version {discord.__version__}
-    aiohttp version  {aiohttp_ver}
-    discord slash version  {discord_slash.__version__}
-    motor (mongodb) version  {mtr_version}
-    os version {platform.platform(aliased=0, terse=0)}
-    python info {platform.python_implementation()} {platform.python_version()}
-    on {len(self.bot.guilds)} guilds
-    made by takipsizad#1919 / takipsizad#9999""")  # aaaaaaaaaaaaaaaaaaaaa
+discord py version {discord.__version__}
+aiohttp version  {aiohttp_ver}
+discord slash version  {discord_slash.__version__}
+motor (mongodb) version  {mtr_version}
+os version {platform.platform(aliased=0, terse=0)}
+python info {platform.python_implementation()} {platform.python_version()}
+on {len(self.bot.guilds)} guilds
+made by takipsizad#1919 / takipsizad#9999""")  # aaaaaaaaaaaaaaaaaaaaa
 
     @commands.command()
     async def vote(self, ctx):
@@ -64,7 +64,7 @@ class Botcmds(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def invite(ctx):
+    async def invite(self, ctx):
         embed = discord.Embed()
         embed.title = "Invite link"
         embed.add_field(
@@ -72,6 +72,10 @@ class Botcmds(commands.Cog):
             value="[invite](https://takipsizadbot.page.link/invite)",
         )
         await ctx.reply(embed=embed)
+    @commands.command()
+    async def pings():
+        """write a code that sends the bots ping"""
+    
 
 def setup(bot):
     bot.add_cog(Botcmds(bot))

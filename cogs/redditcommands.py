@@ -36,7 +36,7 @@ class Redditcommands(commands.Cog):
     
     @commands.group(name="reddit")
     async def reddt(self, ctx, subreddit):
-        user_voted = await self.dbl.get_user_vote(user_id=ctx.author.id)
+        user_voted = True #await self.dbl.get_user_vote(user_id=ctx.author.id)
         is_premium_user = await self.premium.find_one({str(ctx.author.id): "true"})
         if user_voted == True or is_premium_user is not None:
             await ctx.reply(embed=await reddit.reddit(subreddit))
@@ -54,11 +54,13 @@ class Redditcommands(commands.Cog):
                 await ctx.reply("make sure to add meme subreddits with ta!!memes add")
             else:
                 memesubreddit = memesubreddits["subreddits"].split(",")
+                memesubreddit = memesubreddit.replace(" ","")
+                print(memesubreddit)
                 await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
 
     @memes.command()
     async def add(self, ctx,*,args):
-        user_voted = await self.dbl.get_user_vote(user_id=ctx.author.id)
+        user_voted = True #await self.dbl.get_user_vote(user_id=ctx.author.id)
         is_premium_user = await self.premium.find_one({str(ctx.author.id): "true"})
         if user_voted == True or is_premium_user is not None:
             data = {"userId": f"{ctx.author.id}","subreddits": f"{args}"}
@@ -66,7 +68,7 @@ class Redditcommands(commands.Cog):
             subredditdb = self.subredditdb
             userdata = await subredditdb.find_one(datatofind)
             if userdata is not  None:
-                result = await subredditdb.update_one(userdata, {'$set': data})
+                await subredditdb.update_one(userdata, {'$set': data})
             else:
                 result = await subredditdb.insert_one(data)
         await ctx.reply(
@@ -80,16 +82,16 @@ class Redditcommands(commands.Cog):
         await ctx.reply(f"chosen subreddits:{userdata['subreddits']}")
 
     @commands.command(name="all")
-    async def lal(ctx):
+    async def lal(self, ctx):
         await ctx.reply(embed=await reddit.reddit("random"))
 
     @commands.command()
-    async def programmerhumor(ctx):
+    async def programmerhumor(self, ctx):
         await ctx.reply(embed=await reddit.reddit("programmerhumor"))
     
     @cog_ext.cog_slash(name="reddit", description="Reddit command")
     async def _redd_t(self, ctx, subreddit: str):
-        user_voted = await self.dbl.get_user_vote(user_id=ctx.author.id)
+        user_voted = True #await self.dbl.get_user_vote(user_id=ctx.author.id)
         is_premium_user = await self.premium.find_one({str(ctx.author.id): "true"})
         if user_voted == True or is_premium_user is not None:
             await ctx.send(embed=await reddit.reddit(subreddit)) 
