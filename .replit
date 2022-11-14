@@ -1,0 +1,3 @@
+run = "bash setup.sh"
+[packager.features]
+guessImports = false

@@ -43,5 +43,5 @@ class Owner_commands(commands.Cog):
         else:
             raise commands.NotOwner("")
 
-def setup(bot):
-    bot.add_cog(Owner_commands(bot))
+async def setup(bot):
+    await bot.add_cog(Owner_commands(bot))

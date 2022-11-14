@@ -1,6 +1,6 @@
 import discord
 import os
-import topgg
+import dbl
 from datetime import datetime
 from discord.ext import commands
 from utils import reddit
@@ -15,7 +15,7 @@ dbltoken = os.getenv("dbltoken")
 class Redditcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.dbl = topgg.DBLClient(bot=self.bot, token=dbltoken,loop=loop)
+        self.dbl = dbl.DBLClient(bot=self.bot, token=dbltoken,loop=loop)
         dburl = os.getenv("db")
         self.client = motor.motor_tornado.MotorClient(dburl)
         db = self.client["db"]
@@ -54,7 +54,6 @@ class Redditcommands(commands.Cog):
                 await ctx.reply("make sure to add meme subreddits with ta!!memes add")
             else:
                 memesubreddit = memesubreddits["subreddits"].split(",")
-                memesubreddit = memesubreddit.replace(" ","")
                 print(memesubreddit)
                 await ctx.reply(embed=await reddit.randomreddit(memesubreddit))
 
@@ -71,9 +70,10 @@ class Redditcommands(commands.Cog):
                 await subredditdb.update_one(userdata, {'$set': data})
             else:
                 result = await subredditdb.insert_one(data)
-        await ctx.reply(
+        else:
+            await ctx.reply(
             "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
-        )
+            )
     @memes.command(name="list")
     async def lists(self, ctx):
         datatofind = {"userId": f"{ctx.author.id}"}
@@ -100,5 +100,5 @@ class Redditcommands(commands.Cog):
                 "You must vote for the bot vote link: https://top.gg/bot/555036314077233172/vote"
             )  # pain
 
-def setup(bot):
-    bot.add_cog(Redditcommands(bot))
+async def setup(bot):
+    await bot.add_cog(Redditcommands(bot))

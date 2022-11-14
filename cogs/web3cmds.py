@@ -19,7 +19,7 @@ class Web3commands(commands.Cog):
 
     @commands.command()
     async def web3version(self, ctx):
-        res = await fetch(("https://ethapi.takipsizad.tk/api/v1/version")) 
+        res = await fetch(("https://ethapi.takipsizad.repl.co/api/v1/version")) 
         parsed_json = await res.json()
         parsed_json2 = parsed_json["web3version"]
         await ctx.reply(f"web3 js version : {parsed_json2}")
@@ -27,7 +27,7 @@ class Web3commands(commands.Cog):
 
     @eth.command()
     async def gasprices(self, ctx):
-        res = await fetch((f"https://ethapi.takipsizad.tk/api/v1/gasprices"))
+        res = await fetch((f"https://ethapi.takipsizad.repl.co/api/v1/gasprices"))
         parsed_json = await res.json()
         parsed_json2 = parsed_json["gasprices"]
         await self, ctx.reply(f"ethereum balance: {parsed_json2} ***in wei***")
@@ -36,7 +36,7 @@ class Web3commands(commands.Cog):
     @eth.command()
     async def balance(self, ctx, arg1):
         res = await fetch(
-            (f"https://ethapi.takipsizad.tk/api/v1/checkbal?wallet={arg1}")
+            (f"https://ethapi.takipsizad.repl.co/api/v1/checkbal?wallet={arg1}")
         )
         parsed_json = await res.json()
         parsed_json2 = parsed_json["balance"]
@@ -46,7 +46,7 @@ class Web3commands(commands.Cog):
     @eth.command()
     async def ibantoadress(self, ctx, arg1):
         res = await fetch(
-            (f"https://ethapi.takipsizad.tk/api/v1/ibantoadress?Iban={arg1}")
+            (f"https://ethapi.takipsizad.repl.co/api/v1/ibantoadress?Iban={arg1}")
         )
         parsed_json = await res.json()
         parsed_json2 = parsed_json["adress"]
@@ -56,7 +56,7 @@ class Web3commands(commands.Cog):
     @eth.command()
     async def adresstoiban(self, ctx, arg1):
         res = await fetch(
-            (f"https://ethapi.takipsizad.tk/api/v1/adresstoiban?adress={arg1}")
+            (f"https://ethapi.takipsizad.repl.co/api/v1/adresstoiban?adress={arg1}")
         )
         parsed_json = await res.json()
         parsed_json2 = parsed_json["iban"]
@@ -67,7 +67,7 @@ class Web3commands(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def createaccount(self, ctx):
         res = await fetch(
-            "https://ethapi.takipsizad.tk/api/v1/createacc",
+            "https://ethapi.takipsizad.repl.co/api/v1/createacc",
             headers={"User-agent": "Mozilla/5.0"},
         )
         parsed_json = await res.json()
@@ -89,5 +89,5 @@ class Web3commands(commands.Cog):
         await ctx.reply(f"ethereum price: {e} in usd")
 
 
-def setup(bot):
-    bot.add_cog(Web3commands(bot))
+async def setup(bot):
+    await bot.add_cog(Web3commands(bot))

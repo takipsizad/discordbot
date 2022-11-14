@@ -34,7 +34,7 @@ class Utils(commands.Cog):
     @commands.command()
     async def langdetect(self,ctx, arg1):
         res = await fetch(
-            (f"https://termsite.takipsizad.tk/api/langdetect?text={arg1}"),
+            (f"https://termsite.takipsizad.repl.co/api/langdetect?text={arg1}"),
             headers={"User-agent": "Mozilla/5.0"},
         )
         parsed_json = await res.json()
@@ -44,7 +44,7 @@ class Utils(commands.Cog):
     @commands.command()
     async def serverversion(self,ctx):
         res = await fetch(
-            ("https://termsite.takipsizad.tk/api/serverversion"),
+            ("https://termsite.takipsizad.repl.co/api/serverversion"),
             headers={"User-agent": "Mozilla/5.0"},
         )
         parsed_json = await res.json()
@@ -129,8 +129,34 @@ class Utils(commands.Cog):
     @commands.command()
     async def randomproxy(self, ctx):
         await ctx.reply(await randomproxy())
+    @commands.command()
+    async def guvenlinet(self,ctx,argument1):
+        response = await fetch("https://guvenlinet.org.tr/ajax/sorgu/sorgula.php",method="POST", headers={"User-agent": "Mozilla/5.0"},
+        data={"domain_name": argument1 ,"security_code":"wwwwww"} )
+        soup = BeautifulSoup(await response.text(),features="html5lib")
+        e = soup.find_all(id="profile")
+        list2 = []
+        for element in e:
+            elements = BeautifulSoup(str(element),features="html5lib").find_all("img")
+            for elem in elements:
+                if str(elem) != "[]":
+                    list2.append(elem.get("src"))
+        if list2[0] == "/s/images/error.png":
+            await ctx.reply("blocked in all family profiles")
+        elif list2[1] == "/s/images/error.png":
+            await ctx.reply("blocked in child profile")
+        elif list2[1] == "/s/images/success.png":
+            await ctx.reply(f"{argument1} is not blocked")
+        elif list2[1] == "/s/images/warning.png":
+            await ctx.reply("warning (not checked) ( can not be accessed in child profile")
+
+    @commands.command()
+    async def fuel_price(self,ctx,arg):
+        res = await fetch(f"https://api.opet.com.tr/api/fuelprices/prices?ProvinceCode={arg}&IncludeAllProducts=true", headers={"User-agent": "Mozilla/5.0"})
+        parsed_json = await res.json()
+        parsed_json2 = parsed_json[0]["prices"]
+        await ctx.reply(f"fuel prices {parsed_json2}")
 
 
-
-def setup(bot):
-    bot.add_cog(Utils(bot))
+async def setup(bot):
+    await bot.add_cog(Utils(bot))

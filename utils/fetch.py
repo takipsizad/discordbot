@@ -1,14 +1,14 @@
+import aiohttp
 from . import _http as http
-import asyncio
-loop = asyncio.get_event_loop()
-session = loop.run_until_complete(http.sessions())
+run = 0
 class BadMethod(Exception):
-    pass
+  pass
 class NotFound(Exception):
     pass
 
-
 async def fetch(url, method="GET", **kwargs):
+    if run is 0:
+        session = await http.sessions()
     if method == "GET":
         response = await session.get(url, **kwargs)
     elif method == "POST":

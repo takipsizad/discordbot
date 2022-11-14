@@ -6,11 +6,9 @@ import asyncio
 loop = asyncio.get_event_loop()
 
 #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())   # python being a bitch and also pylint
-async def reddit(subreddit,is_nsfw=False):
-    ct = await fetch(
-        f"https://www.reddit.com/r/{subreddit}/new/.json?limit=100",
-        headers={"User-agent": "Mozilla/5.0"},
-    )
+async def reddit(subreddit):
+    subreddit = subreddit.replace(" ", "")
+    ct = await fetch(f"https://www.reddit.com/r/{subreddit}/new.json?limit=100",headers={"User-agent": "Mozilla/5.0"},)
     jsonr = json.dumps(await ct.json())
     parsed_json = json.loads(jsonr)
     parsed_json2 = parsed_json["data"]
@@ -50,11 +48,9 @@ async def reddit(subreddit,is_nsfw=False):
                 name="post is removed ", value="try again :)"
             )
 
-async def randomreddit(subreddits,is_nsfw=False):
-    ct = await fetch(
-        f"https://www.reddit.com/r/{random.choice(subreddits)}/new/.json?limit=100",
-        headers={"User-agent": "Mozilla/5.0"},
-    )
+async def randomreddit(subreddits):
+    subreddit = random.choice(subreddits).replace(" ","")
+    ct = await fetch(f"https://www.reddit.com/r/{subreddit}/new.json?limit=100",headers={"User-agent": "Mozilla/5.0"},)
     jsonr = json.dumps(await ct.json())
     parsed_json = json.loads(jsonr)
     parsed_json2 = parsed_json["data"]

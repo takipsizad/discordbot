@@ -10,6 +10,7 @@ async def sessions():
             "8.8.8.8",  # google
             "1.1.1.1",  # cloudflare
             "1.0.0.1",  # cloudflare
+						"9.9.9.9"
         ]
     )
     conn = aiohttp.TCPConnector(resolver=resolver)

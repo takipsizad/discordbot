@@ -35,7 +35,9 @@ class Botcmds(commands.Cog):
 
     @commands.command()
     async def echo(self, ctx, *, args):
-        if not "@" in args:
+        if ctx.author.id == 849518771268878426:
+            await ctx.send(args)
+        elif not "@" in args:
             await ctx.send(args)
         else:
             await ctx.reply("dont send mentions")
@@ -72,10 +74,9 @@ made by takipsizad#1919 / takipsizad#9999""")  # aaaaaaaaaaaaaaaaaaaaa
             value="[invite](https://takipsizadbot.page.link/invite)",
         )
         await ctx.reply(embed=embed)
-    @commands.command()
-    async def pings():
-        """write a code that sends the bots ping"""
-    
 
-def setup(bot):
-    bot.add_cog(Botcmds(bot))
+
+async def setup(bot):
+    await bot.add_cog(Botcmds(bot))
+ 
+

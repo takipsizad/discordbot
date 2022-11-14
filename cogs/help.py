@@ -89,10 +89,10 @@ class help(commands.Cog):
         """,
         )
         menu = PaginatedMenu(ctx)
-        menu.show_page_numbers()
-        menu.set_timeout(30)
-        menu.persist_on_close()
-        menu.allow_multisession()
+        #menu.show_page_numbers()
+        #menu.set_timeout(30)
+        #menu.persist_on_close()
+        #menu.allow_multisession()
         menu.add_pages([page1, page2, page3, page4, page5, page6])
         xx = {f"{ctx.author.id}": "true"}
         x = await tos.find_one(xx)
@@ -114,5 +114,5 @@ class help(commands.Cog):
             await tos.insert_one({str(ctx.author.id): "true"})
 
 
-def setup(bot):
-    bot.add_cog(help(bot))
+async def setup(bot):
+    await bot.add_cog(help(bot))
